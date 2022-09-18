@@ -7,7 +7,7 @@ import torch
 
 from .resnet import ResNet
 from .convnext import ConvNeXt
-from .vit_models import ViT, Swin, SSLViT
+from .vit_models import ViT, Swin, SSLViT, ViTGAN
 from ..utils import logging
 logger = logging.get_logger("visual_prompt")
 # Supported model types
@@ -17,6 +17,7 @@ _MODEL_TYPES = {
     "vit": ViT,
     "swin": Swin,
     "ssl-vit": SSLViT,
+    'vit-gan':ViTGAN
 }
 
 

@@ -17,6 +17,7 @@ from ..solver.optimizer import make_optimizer
 from ..solver.losses import build_loss
 from ..utils import logging
 from ..utils.train_utils import AverageMeter, gpu_mem_usage
+from ..models.mlp import MLP
 
 logger = logging.get_logger("visual_prompt")
 
@@ -38,12 +39,30 @@ class Trainer():
     ) -> None:
         self.cfg = cfg
         self.model = model
-        self.device = device
+        if 'gan' in self.cfg.MODEL.TRANSFER_TYPE:
+            #print(self.model.feat_dim)
+            self.discriminator = MLP(
+                input_dim=self.model.feat_dim,
+                mlp_dims=[self.model.feat_dim] * self.cfg.MODEL.MLP_NUM + \
+                    [1], # noqa
+                special_bias=True,
+                dis = True
+            )
+            self.discriminator = self.discriminator.cuda()
+            self.gan_criterion = nn.BCELoss()
 
+        self.device = device
         # solver related
         logger.info("\tSetting up the optimizer...")
         self.optimizer = make_optimizer([self.model], cfg.SOLVER)
         self.scheduler = make_scheduler(self.optimizer, cfg.SOLVER)
+
+        if 'gan' in self.cfg.MODEL.TRANSFER_TYPE:
+            self.optimizerD = make_optimizer([self.discriminator],cfg.SOLVER)
+            self.schedulerD = make_scheduler(self.optimizerD, cfg.SOLVER)
+            #self.optimizerG = make_optimizer([self.discriminator],cfg.SOLVER)
+            #self.schedulerG = make_scheduler(self.model.enc, cfg.SOLVER) # may be a bug here
+
         self.cls_criterion = build_loss(self.cfg)
 
         self.checkpointer = Checkpointer(
@@ -74,15 +93,56 @@ class Trainer():
             outputs: output logits
         """
         # move data to device
-        inputs = inputs.to(self.device, non_blocking=True)    # (batchsize, 2048)
+        if 'gan' in self.cfg.MODEL.TRANSFER_TYPE and is_train:
+            x = inputs['target'].to(self.device, non_blocking=True)
+            source = inputs['source'].to(self.device, non_blocking=True)
+            inputs = source
+        else:
+            inputs = inputs.to(self.device, non_blocking=True)    # (batchsize, 2048)
+        
+        
         targets = targets.to(self.device, non_blocking=True)  # (batchsize, )
 
         if self.cfg.DBG:
             logger.info(f"shape of inputs: {inputs.shape}")
             logger.info(f"shape of targets: {targets.shape}")
-
         # forward
         with torch.set_grad_enabled(is_train):
+            # As an attempt, we first train GAN loss and then the classification loss:
+            # only prompt+gan mode and training requires this process
+            if 'gan' in self.cfg.MODEL.TRANSFER_TYPE and is_train:
+                # (1) Update D network: maximize log(D(x)) + log(1 - D(G(z)))
+                # optimizer zero_grad                
+                real_label = 1
+                fake_label = 0
+                x_embed, source_embed = self.model.forward_encoder(x,source)
+                batch_size = x_embed.shape[0]
+                # train with real
+                self.optimizerD.zero_grad()
+                source_out = self.discriminator(source_embed)  
+                label = torch.full((batch_size,1), real_label, dtype = torch.float,  device='cuda') # check type here
+                #print(label.shape)
+                lossD_real = self.gan_criterion(source_out,label)
+                lossD_real.backward()
+
+                # train with fake
+                x_out = self.discriminator(x_embed.detach())
+                label.fill_(fake_label)
+                lossD_fake = self.gan_criterion(x_out,label)
+                lossD_fake.backward()
+                self.optimizerD.step()
+                
+                ## optimizer update
+                #(2) Update G network (encoder): maximize log(D(G(z)))
+                # optimizer.zero_grad()
+                self.optimizer.zero_grad()
+                label.fill_(real_label)
+                x_out = self.discriminator(x_embed)
+                lossG = self.gan_criterion(x_out,label)
+                lossG.backward()
+                #self.optimizerG.step()
+        
+            # classification loss
             outputs = self.model(inputs)  # (batchsize, num_cls)
             if self.cfg.DBG:
                 logger.info(
@@ -114,24 +174,32 @@ class Trainer():
 
         # =======backward and optim step only if in training phase... =========
         if is_train:
-            self.optimizer.zero_grad()
+            #self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
 
         return loss, outputs
 
-    def get_input(self, data):
+    def get_input(self, data,is_train=True):
         if not isinstance(data["image"], torch.Tensor):
             for k, v in data.items():
                 data[k] = torch.from_numpy(v)
-
-        inputs = data["image"].float()
-        labels = data["label"]
+        if 'gan' in self.cfg.MODEL.TRANSFER_TYPE and is_train:
+            inputs = {
+                'source': data['source'].float(),
+                'target': data['image'].float()
+            }
+            labels = data["label"]
+        
+        else:
+            inputs = data["image"].float()
+            labels = data["label"]
         return inputs, labels
 
     def train_classifier(self, train_loader, val_loader, test_loader):
         """
         Train a classifier using epoch
+        Main training with several epoches
         """
         # save the model prompt if required before training
         self.model.eval()
@@ -187,8 +255,11 @@ class Trainer():
                 if train_loss == -1:
                     # continue
                     return None
-
-                losses.update(train_loss.item(), X.shape[0])
+                
+                if 'gan' in self.cfg.MODEL.TRANSFER_TYPE:
+                    losses.update(train_loss.item(), X['source'].shape[0])
+                else:
+                    losses.update(train_loss.item(), X.shape[0])
 
                 # measure elapsed time
                 batch_time.update(time.time() - end)
@@ -289,7 +360,7 @@ class Trainer():
 
         for idx, input_data in enumerate(data_loader):
             end = time.time()
-            X, targets = self.get_input(input_data)
+            X, targets = self.get_input(input_data,is_train=False)
             # measure data loading time
             data_time.update(time.time() - end)
 

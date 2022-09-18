@@ -1,0 +1,741 @@
+[09/16 22:14:23][INFO] visual_prompt:   97: Rank of current process: 0. World size: 1
+[09/16 22:14:23][INFO] visual_prompt:   98: Environment info:
+-------------------  ---------------------------------------------------
+Python               3.7.13 (default, Mar 29 2022, 02:18:16) [GCC 7.5.0]
+ENV_MODULE           <not set>
+PyTorch              1.7.1
+PyTorch Debug Build  False
+CUDA available       True
+CUDA ID              1
+GPU 0                GeForce RTX 3090
+Pillow               9.2.0
+cv2                  4.6.0
+-------------------  ---------------------------------------------------
+PyTorch built with:
+  - GCC 7.3
+  - C++ Version: 201402
+  - Intel(R) Math Kernel Library Version 2019.0.4 Product Build 20190411 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v1.6.0 (Git Hash 5ef631a030a6f73131c77892041042805a06064f)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - NNPACK is enabled
+  - CPU capability usage: AVX2
+  - CUDA Runtime 11.0
+  - NVCC architecture flags: -gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_61,code=sm_61;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_80,code=sm_80;-gencode;arch=compute_37,code=compute_37
+  - CuDNN 8.0.5
+  - Magma 2.5.2
+  - Build settings: BLAS=MKL, BUILD_TYPE=Release, CXX_FLAGS= -Wno-deprecated -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -fopenmp -DNDEBUG -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DUSE_VULKAN_WRAPPER -O2 -fPIC -Wno-narrowing -Wall -Wextra -Werror=return-type -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-result -Wno-unused-local-typedefs -Wno-strict-overflow -Wno-strict-aliasing -Wno-error=deprecated-declarations -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=redundant-decls -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Wno-stringop-overflow, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, USE_CUDA=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=ON, USE_NNPACK=ON, USE_OPENMP=ON, 
+
+[09/16 22:14:23][INFO] visual_prompt:  100: Command line arguments: Namespace(config_file='configs/prompt/cub.yaml', opts=['MODEL.TYPE', 'vit', 'DATA.BATCH_SIZE', '128', 'MODEL.PROMPT.DEEP', 'True', 'MODEL.PROMPT.DROPOUT', '0.1', 'MODEL.PROMPT.NUM_TOKENS', '10', 'DATA.FEATURE', 'sup_vitb16_imagenet21k', 'DATA.DATAPATH', '/remote-home/share/VPT/data/CUB_200_2011', 'MODEL.MODEL_ROOT', '/remote-home/share/VPT/pretrain/', 'OUTPUT_DIR', './tst/fgvc/cub'], train_type='prompt')
+[09/16 22:14:23][INFO] visual_prompt:  105: Contents of args.config_file=configs/prompt/cub.yaml:
+_BASE_: "../base-prompt.yaml"
+RUN_N_TIMES: 5
+DATA:
+  NAME: "CUB"
+  DATAPATH: ""  #TODO: need to specify here
+  NUMBER_CLASSES: 200
+  MULTILABEL: False
+MODEL:
+  TYPE: "vit"
+SOLVER:
+  BASE_LR: 0.1
+  WEIGHT_DECAY: 0.01
+[09/16 22:14:23][INFO] visual_prompt:  109: Training with config:
+[09/16 22:14:23][INFO] visual_prompt:  110: {'CUDNN_BENCHMARK': False,
+ 'DATA': {'BATCH_SIZE': 128,
+          'CLASS_WEIGHTS_TYPE': 'none',
+          'CROPSIZE': 224,
+          'DATAPATH': '/remote-home/share/VPT/data/CUB_200_2011',
+          'FEATURE': 'sup_vitb16_imagenet21k',
+          'MULTILABEL': False,
+          'NAME': 'CUB',
+          'NO_TEST': False,
+          'NUMBER_CLASSES': 200,
+          'NUM_WORKERS': 4,
+          'PERCENTAGE': 1.0,
+          'PIN_MEMORY': True},
+ 'DBG': False,
+ 'DIST_BACKEND': 'nccl',
+ 'DIST_INIT_FILE': '',
+ 'DIST_INIT_PATH': 'env://',
+ 'MODEL': {'ADAPTER': CfgNode({'REDUCATION_FACTOR': 8, 'STYLE': 'Pfeiffer'}),
+           'LINEAR': CfgNode({'MLP_SIZES': [], 'DROPOUT': 0.1}),
+           'MLP_NUM': 0,
+           'MODEL_ROOT': '/remote-home/share/VPT/pretrain/',
+           'PROMPT': {'CLSEMB_FOLDER': '',
+                      'CLSEMB_PATH': '',
+                      'DEEP': True,
+                      'DEEP_SHARED': False,
+                      'DROPOUT': 0.1,
+                      'FORWARD_DEEP_NOEXPAND': False,
+                      'INITIATION': 'random',
+                      'LOCATION': 'prepend',
+                      'NUM_DEEP_LAYERS': None,
+                      'NUM_TOKENS': 10,
+                      'PROJECT': -1,
+                      'REVERSE_DEEP': False,
+                      'SAVE_FOR_EACH_EPOCH': False,
+                      'VIT_POOL_TYPE': 'original'},
+           'SAVE_CKPT': False,
+           'TRANSFER_TYPE': 'prompt',
+           'TYPE': 'vit',
+           'WEIGHT_PATH': ''},
+ 'NUM_GPUS': 1,
+ 'NUM_SHARDS': 1,
+ 'OUTPUT_DIR': './tst/fgvc/cub/CUB/sup_vitb16_imagenet21k/lr0.05_wd0.01/run1',
+ 'RUN_N_TIMES': 5,
+ 'SEED': None,
+ 'SOLVER': {'BASE_LR': 0.05,
+            'BIAS_MULTIPLIER': 1.0,
+            'DBG_TRAINABLE': False,
+            'LOG_EVERY_N': 100,
+            'LOSS': 'softmax',
+            'LOSS_ALPHA': 0.01,
+            'MOMENTUM': 0.9,
+            'OPTIMIZER': 'sgd',
+            'PATIENCE': 300,
+            'SCHEDULER': 'cosine',
+            'TOTAL_EPOCH': 100,
+            'WARMUP_EPOCH': 10,
+            'WEIGHT_DECAY': 0.01,
+            'WEIGHT_DECAY_BIAS': 0}}
+[09/16 22:14:23][INFO] visual_prompt:   67: Loading training data (final training data for vtab)...
+[09/16 22:14:23][INFO] visual_prompt:   27: Constructing CUB dataset train...
+[09/16 22:14:23][INFO] visual_prompt:   70: Number of images: 5394
+[09/16 22:14:23][INFO] visual_prompt:   71: Number of classes: 200
+[09/16 22:14:23][INFO] visual_prompt:   73: Loading validation data...
+[09/16 22:14:23][INFO] visual_prompt:   27: Constructing CUB dataset val...
+[09/16 22:14:23][INFO] visual_prompt:   70: Number of images: 600
+[09/16 22:14:23][INFO] visual_prompt:   71: Number of classes: 200
+[09/16 22:14:23][INFO] visual_prompt:   76: Loading test data...
+[09/16 22:14:23][INFO] visual_prompt:   27: Constructing CUB dataset test...
+[09/16 22:14:23][INFO] visual_prompt:   70: Number of images: 5794
+[09/16 22:14:23][INFO] visual_prompt:   71: Number of classes: 200
+[09/16 22:14:23][INFO] visual_prompt:  103: Constructing models...
+[09/16 22:14:28][INFO] visual_prompt:   53: Total Parameters: 86044616	 Gradient Parameters: 245960
+[09/16 22:14:28][INFO] visual_prompt:   54: tuned percent:0.286
+[09/16 22:14:28][INFO] visual_prompt:   40: Device used for model: 0
+[09/16 22:14:28][INFO] visual_prompt:  106: Setting up Evalutator...
+[09/16 22:14:28][INFO] visual_prompt:  108: Setting up Trainer...
+[09/16 22:14:28][INFO] visual_prompt:   44: 	Setting up the optimizer...
+[09/16 22:14:28][INFO] visual_prompt:  166: Training 1 / 100 epoch, with learning rate 0.0
+[09/16 22:14:52][INFO] visual_prompt:  220: Epoch 1 / 100: avg data time: 4.33e-02, avg batch time: 0.5592, average train loss: 5.3255
+[09/16 22:14:55][INFO] visual_prompt:  325: Inference (val):avg data time: 4.53e-05, avg batch time: 0.2307, average loss: 5.3275
+[09/16 22:14:55][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 0.50	top5: 2.33	
+[09/16 22:15:10][INFO] visual_prompt:  325: Inference (test):avg data time: 1.01e-04, avg batch time: 0.2418, average loss: 5.3259
+[09/16 22:15:10][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 0.40	top5: 2.59	
+[09/16 22:15:10][INFO] visual_prompt:  247: Best epoch 1: best metric: 0.005
+[09/16 22:15:10][INFO] visual_prompt:  166: Training 2 / 100 epoch, with learning rate 0.005000000000000001
+[09/16 22:15:34][INFO] visual_prompt:  220: Epoch 2 / 100: avg data time: 4.01e-02, avg batch time: 0.5549, average train loss: 5.3141
+[09/16 22:15:37][INFO] visual_prompt:  325: Inference (val):avg data time: 4.70e-05, avg batch time: 0.2304, average loss: 5.2868
+[09/16 22:15:37][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 0.83	top5: 3.33	
+[09/16 22:15:53][INFO] visual_prompt:  325: Inference (test):avg data time: 1.92e-04, avg batch time: 0.2423, average loss: 5.2859
+[09/16 22:15:53][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 0.78	top5: 3.31	
+[09/16 22:15:53][INFO] visual_prompt:  247: Best epoch 2: best metric: 0.008
+[09/16 22:15:53][INFO] visual_prompt:  166: Training 3 / 100 epoch, with learning rate 0.010000000000000002
+[09/16 22:16:17][INFO] visual_prompt:  220: Epoch 3 / 100: avg data time: 4.12e-02, avg batch time: 0.5555, average train loss: 5.2601
+[09/16 22:16:20][INFO] visual_prompt:  325: Inference (val):avg data time: 3.98e-05, avg batch time: 0.2305, average loss: 5.1749
+[09/16 22:16:20][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 3.50	top5: 10.67	
+[09/16 22:16:35][INFO] visual_prompt:  325: Inference (test):avg data time: 1.20e-04, avg batch time: 0.2422, average loss: 5.1752
+[09/16 22:16:35][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 2.80	top5: 9.98	
+[09/16 22:16:35][INFO] visual_prompt:  247: Best epoch 3: best metric: 0.035
+[09/16 22:16:35][INFO] visual_prompt:  166: Training 4 / 100 epoch, with learning rate 0.015
+[09/16 22:16:59][INFO] visual_prompt:  220: Epoch 4 / 100: avg data time: 4.16e-02, avg batch time: 0.5556, average train loss: 4.9965
+[09/16 22:17:02][INFO] visual_prompt:  325: Inference (val):avg data time: 7.34e-05, avg batch time: 0.2315, average loss: 4.6062
+[09/16 22:17:02][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 8.00	top5: 30.67	
+[09/16 22:17:17][INFO] visual_prompt:  325: Inference (test):avg data time: 9.06e-05, avg batch time: 0.2421, average loss: 4.6037
+[09/16 22:17:17][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 8.35	top5: 28.34	
+[09/16 22:17:17][INFO] visual_prompt:  247: Best epoch 4: best metric: 0.080
+[09/16 22:17:17][INFO] visual_prompt:  166: Training 5 / 100 epoch, with learning rate 0.020000000000000004
+[09/16 22:17:41][INFO] visual_prompt:  220: Epoch 5 / 100: avg data time: 4.11e-02, avg batch time: 0.5553, average train loss: 4.4029
+[09/16 22:17:44][INFO] visual_prompt:  325: Inference (val):avg data time: 4.17e-05, avg batch time: 0.2309, average loss: 4.0043
+[09/16 22:17:44][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 26.17	top5: 58.83	
+[09/16 22:17:59][INFO] visual_prompt:  325: Inference (test):avg data time: 1.12e-04, avg batch time: 0.2421, average loss: 3.9925
+[09/16 22:17:59][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 25.61	top5: 58.61	
+[09/16 22:17:59][INFO] visual_prompt:  247: Best epoch 5: best metric: 0.262
+[09/16 22:17:59][INFO] visual_prompt:  166: Training 6 / 100 epoch, with learning rate 0.025
+[09/16 22:18:23][INFO] visual_prompt:  220: Epoch 6 / 100: avg data time: 3.92e-02, avg batch time: 0.5534, average train loss: 3.8585
+[09/16 22:18:26][INFO] visual_prompt:  325: Inference (val):avg data time: 4.46e-05, avg batch time: 0.2312, average loss: 3.4809
+[09/16 22:18:26][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 39.67	top5: 77.67	
+[09/16 22:18:41][INFO] visual_prompt:  325: Inference (test):avg data time: 1.46e-04, avg batch time: 0.2423, average loss: 3.4841
+[09/16 22:18:41][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 40.89	top5: 77.79	
+[09/16 22:18:41][INFO] visual_prompt:  247: Best epoch 6: best metric: 0.397
+[09/16 22:18:41][INFO] visual_prompt:  166: Training 7 / 100 epoch, with learning rate 0.03
+[09/16 22:19:05][INFO] visual_prompt:  220: Epoch 7 / 100: avg data time: 4.14e-02, avg batch time: 0.5558, average train loss: 3.3604
+[09/16 22:19:08][INFO] visual_prompt:  325: Inference (val):avg data time: 5.58e-05, avg batch time: 0.2306, average loss: 2.9950
+[09/16 22:19:08][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 53.33	top5: 85.67	
+[09/16 22:19:24][INFO] visual_prompt:  325: Inference (test):avg data time: 1.09e-04, avg batch time: 0.2425, average loss: 2.9900
+[09/16 22:19:24][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 54.90	top5: 86.43	
+[09/16 22:19:24][INFO] visual_prompt:  247: Best epoch 7: best metric: 0.533
+[09/16 22:19:24][INFO] visual_prompt:  166: Training 8 / 100 epoch, with learning rate 0.034999999999999996
+[09/16 22:19:48][INFO] visual_prompt:  220: Epoch 8 / 100: avg data time: 3.99e-02, avg batch time: 0.5541, average train loss: 2.9092
+[09/16 22:19:51][INFO] visual_prompt:  325: Inference (val):avg data time: 5.93e-05, avg batch time: 0.2310, average loss: 2.5563
+[09/16 22:19:51][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 59.50	top5: 89.17	
+[09/16 22:20:07][INFO] visual_prompt:  325: Inference (test):avg data time: 2.23e-04, avg batch time: 0.2430, average loss: 2.5617
+[09/16 22:20:07][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 62.39	top5: 90.71	
+[09/16 22:20:07][INFO] visual_prompt:  247: Best epoch 8: best metric: 0.595
+[09/16 22:20:07][INFO] visual_prompt:  166: Training 9 / 100 epoch, with learning rate 0.04000000000000001
+[09/16 22:20:31][INFO] visual_prompt:  220: Epoch 9 / 100: avg data time: 3.97e-02, avg batch time: 0.5544, average train loss: 2.5051
+[09/16 22:20:34][INFO] visual_prompt:  325: Inference (val):avg data time: 5.03e-05, avg batch time: 0.2317, average loss: 2.2209
+[09/16 22:20:34][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 66.33	top5: 93.67	
+[09/16 22:20:50][INFO] visual_prompt:  325: Inference (test):avg data time: 1.19e-04, avg batch time: 0.2416, average loss: 2.2174
+[09/16 22:20:50][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 68.50	top5: 93.51	
+[09/16 22:20:50][INFO] visual_prompt:  247: Best epoch 9: best metric: 0.663
+[09/16 22:20:50][INFO] visual_prompt:  166: Training 10 / 100 epoch, with learning rate 0.045000000000000005
+[09/16 22:21:14][INFO] visual_prompt:  220: Epoch 10 / 100: avg data time: 4.14e-02, avg batch time: 0.5557, average train loss: 2.1902
+[09/16 22:21:17][INFO] visual_prompt:  325: Inference (val):avg data time: 2.00e-04, avg batch time: 0.2318, average loss: 1.9503
+[09/16 22:21:17][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 68.50	top5: 95.33	
+[09/16 22:21:32][INFO] visual_prompt:  325: Inference (test):avg data time: 1.09e-04, avg batch time: 0.2423, average loss: 1.9416
+[09/16 22:21:32][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 72.61	top5: 95.55	
+[09/16 22:21:32][INFO] visual_prompt:  247: Best epoch 10: best metric: 0.685
+[09/16 22:21:32][INFO] visual_prompt:  166: Training 11 / 100 epoch, with learning rate 0.05
+[09/16 22:21:56][INFO] visual_prompt:  220: Epoch 11 / 100: avg data time: 4.07e-02, avg batch time: 0.5553, average train loss: 1.9515
+[09/16 22:21:59][INFO] visual_prompt:  325: Inference (val):avg data time: 4.53e-05, avg batch time: 0.2309, average loss: 1.7708
+[09/16 22:21:59][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 74.00	top5: 96.17	
+[09/16 22:22:14][INFO] visual_prompt:  325: Inference (test):avg data time: 1.22e-04, avg batch time: 0.2423, average loss: 1.7707
+[09/16 22:22:14][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 74.91	top5: 96.32	
+[09/16 22:22:14][INFO] visual_prompt:  247: Best epoch 11: best metric: 0.740
+[09/16 22:22:14][INFO] visual_prompt:  166: Training 12 / 100 epoch, with learning rate 0.0499847706754774
+[09/16 22:22:38][INFO] visual_prompt:  220: Epoch 12 / 100: avg data time: 3.86e-02, avg batch time: 0.5538, average train loss: 1.8040
+[09/16 22:22:41][INFO] visual_prompt:  325: Inference (val):avg data time: 6.16e-05, avg batch time: 0.2304, average loss: 1.6424
+[09/16 22:22:41][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 76.33	top5: 96.83	
+[09/16 22:22:55][INFO] visual_prompt:  325: Inference (test):avg data time: 1.12e-04, avg batch time: 0.2425, average loss: 1.6412
+[09/16 22:22:55][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 76.87	top5: 96.79	
+[09/16 22:22:55][INFO] visual_prompt:  247: Best epoch 12: best metric: 0.763
+[09/16 22:22:55][INFO] visual_prompt:  166: Training 13 / 100 epoch, with learning rate 0.04993910125649561
+[09/16 22:23:19][INFO] visual_prompt:  220: Epoch 13 / 100: avg data time: 3.84e-02, avg batch time: 0.5529, average train loss: 1.6779
+[09/16 22:23:22][INFO] visual_prompt:  325: Inference (val):avg data time: 7.48e-05, avg batch time: 0.2306, average loss: 1.5962
+[09/16 22:23:22][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 76.50	top5: 96.67	
+[09/16 22:23:37][INFO] visual_prompt:  325: Inference (test):avg data time: 1.10e-04, avg batch time: 0.2419, average loss: 1.5935
+[09/16 22:23:37][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 78.51	top5: 97.05	
+[09/16 22:23:37][INFO] visual_prompt:  247: Best epoch 13: best metric: 0.765
+[09/16 22:23:37][INFO] visual_prompt:  166: Training 14 / 100 epoch, with learning rate 0.049863047384206834
+[09/16 22:24:01][INFO] visual_prompt:  220: Epoch 14 / 100: avg data time: 4.32e-02, avg batch time: 0.5570, average train loss: 1.6242
+[09/16 22:24:04][INFO] visual_prompt:  325: Inference (val):avg data time: 5.19e-05, avg batch time: 0.2309, average loss: 1.5316
+[09/16 22:24:04][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 78.83	top5: 96.50	
+[09/16 22:24:19][INFO] visual_prompt:  325: Inference (test):avg data time: 1.03e-04, avg batch time: 0.2417, average loss: 1.5301
+[09/16 22:24:19][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 78.44	top5: 96.96	
+[09/16 22:24:19][INFO] visual_prompt:  247: Best epoch 14: best metric: 0.788
+[09/16 22:24:19][INFO] visual_prompt:  166: Training 15 / 100 epoch, with learning rate 0.04975670171853926
+[09/16 22:24:43][INFO] visual_prompt:  220: Epoch 15 / 100: avg data time: 3.90e-02, avg batch time: 0.5539, average train loss: 1.5586
+[09/16 22:24:46][INFO] visual_prompt:  325: Inference (val):avg data time: 5.35e-05, avg batch time: 0.2318, average loss: 1.4973
+[09/16 22:24:46][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 77.50	top5: 97.00	
+[09/16 22:25:01][INFO] visual_prompt:  325: Inference (test):avg data time: 1.42e-04, avg batch time: 0.2421, average loss: 1.4909
+[09/16 22:25:01][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 79.13	top5: 97.31	
+[09/16 22:25:01][INFO] visual_prompt:  166: Training 16 / 100 epoch, with learning rate 0.049620193825305206
+[09/16 22:25:25][INFO] visual_prompt:  220: Epoch 16 / 100: avg data time: 4.25e-02, avg batch time: 0.5566, average train loss: 1.5168
+[09/16 22:25:28][INFO] visual_prompt:  325: Inference (val):avg data time: 3.74e-05, avg batch time: 0.2305, average loss: 1.4621
+[09/16 22:25:28][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 82.17	top5: 97.00	
+[09/16 22:25:43][INFO] visual_prompt:  325: Inference (test):avg data time: 1.40e-04, avg batch time: 0.2419, average loss: 1.4515
+[09/16 22:25:43][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 80.98	top5: 97.32	
+[09/16 22:25:43][INFO] visual_prompt:  247: Best epoch 16: best metric: 0.822
+[09/16 22:25:43][INFO] visual_prompt:  166: Training 17 / 100 epoch, with learning rate 0.049453690018345146
+[09/16 22:26:07][INFO] visual_prompt:  220: Epoch 17 / 100: avg data time: 4.24e-02, avg batch time: 0.5569, average train loss: 1.4949
+[09/16 22:26:10][INFO] visual_prompt:  325: Inference (val):avg data time: 5.15e-05, avg batch time: 0.2313, average loss: 1.4514
+[09/16 22:26:10][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 80.67	top5: 97.33	
+[09/16 22:26:25][INFO] visual_prompt:  325: Inference (test):avg data time: 9.96e-05, avg batch time: 0.2422, average loss: 1.4323
+[09/16 22:26:26][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 81.10	top5: 97.69	
+[09/16 22:26:26][INFO] visual_prompt:  166: Training 18 / 100 epoch, with learning rate 0.04925739315689991
+[09/16 22:26:50][INFO] visual_prompt:  220: Epoch 18 / 100: avg data time: 4.22e-02, avg batch time: 0.5567, average train loss: 1.4580
+[09/16 22:26:53][INFO] visual_prompt:  325: Inference (val):avg data time: 4.15e-05, avg batch time: 0.2305, average loss: 1.4395
+[09/16 22:26:53][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 81.33	top5: 97.50	
+[09/16 22:27:07][INFO] visual_prompt:  325: Inference (test):avg data time: 1.23e-04, avg batch time: 0.2419, average loss: 1.4362
+[09/16 22:27:07][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 80.74	top5: 97.45	
+[09/16 22:27:07][INFO] visual_prompt:  166: Training 19 / 100 epoch, with learning rate 0.04903154239845797
+[09/16 22:27:31][INFO] visual_prompt:  220: Epoch 19 / 100: avg data time: 3.84e-02, avg batch time: 0.5530, average train loss: 1.4480
+[09/16 22:27:34][INFO] visual_prompt:  325: Inference (val):avg data time: 4.14e-05, avg batch time: 0.2310, average loss: 1.4245
+[09/16 22:27:34][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 80.00	top5: 96.33	
+[09/16 22:27:49][INFO] visual_prompt:  325: Inference (test):avg data time: 9.19e-05, avg batch time: 0.2420, average loss: 1.4233
+[09/16 22:27:49][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 80.12	top5: 97.38	
+[09/16 22:27:49][INFO] visual_prompt:  166: Training 20 / 100 epoch, with learning rate 0.048776412907378844
+[09/16 22:28:13][INFO] visual_prompt:  220: Epoch 20 / 100: avg data time: 4.07e-02, avg batch time: 0.5552, average train loss: 1.4498
+[09/16 22:28:16][INFO] visual_prompt:  325: Inference (val):avg data time: 6.24e-05, avg batch time: 0.2320, average loss: 1.4239
+[09/16 22:28:16][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 81.83	top5: 97.17	
+[09/16 22:28:31][INFO] visual_prompt:  325: Inference (test):avg data time: 1.31e-04, avg batch time: 0.2424, average loss: 1.4191
+[09/16 22:28:31][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 81.31	top5: 97.72	
+[09/16 22:28:31][INFO] visual_prompt:  166: Training 21 / 100 epoch, with learning rate 0.048492315519647715
+[09/16 22:28:55][INFO] visual_prompt:  220: Epoch 21 / 100: avg data time: 4.06e-02, avg batch time: 0.5549, average train loss: 1.4172
+[09/16 22:28:58][INFO] visual_prompt:  325: Inference (val):avg data time: 4.50e-05, avg batch time: 0.2305, average loss: 1.4037
+[09/16 22:28:58][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 82.67	top5: 98.00	
+[09/16 22:29:13][INFO] visual_prompt:  325: Inference (test):avg data time: 1.49e-04, avg batch time: 0.2416, average loss: 1.4017
+[09/16 22:29:13][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 80.91	top5: 97.55	
+[09/16 22:29:13][INFO] visual_prompt:  247: Best epoch 21: best metric: 0.827
+[09/16 22:29:13][INFO] visual_prompt:  166: Training 22 / 100 epoch, with learning rate 0.048179596364169686
+[09/16 22:29:37][INFO] visual_prompt:  220: Epoch 22 / 100: avg data time: 4.11e-02, avg batch time: 0.5554, average train loss: 1.3870
+[09/16 22:29:40][INFO] visual_prompt:  325: Inference (val):avg data time: 9.23e-05, avg batch time: 0.2311, average loss: 1.3450
+[09/16 22:29:40][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 82.50	top5: 97.33	
+[09/16 22:29:55][INFO] visual_prompt:  325: Inference (test):avg data time: 1.20e-04, avg batch time: 0.2415, average loss: 1.3363
+[09/16 22:29:55][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 82.74	top5: 97.93	
+[09/16 22:29:55][INFO] visual_prompt:  166: Training 23 / 100 epoch, with learning rate 0.04783863644106502
+[09/16 22:30:19][INFO] visual_prompt:  220: Epoch 23 / 100: avg data time: 4.12e-02, avg batch time: 0.5548, average train loss: 1.3762
+[09/16 22:30:22][INFO] visual_prompt:  325: Inference (val):avg data time: 6.40e-05, avg batch time: 0.2316, average loss: 1.3688
+[09/16 22:30:22][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 82.00	top5: 97.83	
+[09/16 22:30:37][INFO] visual_prompt:  325: Inference (test):avg data time: 1.50e-04, avg batch time: 0.2419, average loss: 1.3496
+[09/16 22:30:37][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 82.72	top5: 97.98	
+[09/16 22:30:37][INFO] visual_prompt:  166: Training 24 / 100 epoch, with learning rate 0.047469851157479176
+[09/16 22:31:01][INFO] visual_prompt:  220: Epoch 24 / 100: avg data time: 3.97e-02, avg batch time: 0.5533, average train loss: 1.3679
+[09/16 22:31:04][INFO] visual_prompt:  325: Inference (val):avg data time: 4.02e-05, avg batch time: 0.2314, average loss: 1.3698
+[09/16 22:31:04][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 80.50	top5: 97.50	
+[09/16 22:31:19][INFO] visual_prompt:  325: Inference (test):avg data time: 1.25e-04, avg batch time: 0.2419, average loss: 1.3632
+[09/16 22:31:19][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 82.05	top5: 97.50	
+[09/16 22:31:19][INFO] visual_prompt:  166: Training 25 / 100 epoch, with learning rate 0.047073689821473176
+[09/16 22:31:43][INFO] visual_prompt:  220: Epoch 25 / 100: avg data time: 4.13e-02, avg batch time: 0.5553, average train loss: 1.3696
+[09/16 22:31:46][INFO] visual_prompt:  325: Inference (val):avg data time: 3.41e-05, avg batch time: 0.2305, average loss: 1.3376
+[09/16 22:31:46][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 82.67	top5: 97.33	
+[09/16 22:32:00][INFO] visual_prompt:  325: Inference (test):avg data time: 1.12e-04, avg batch time: 0.2417, average loss: 1.3374
+[09/16 22:32:01][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 82.03	top5: 97.62	
+[09/16 22:32:01][INFO] visual_prompt:  166: Training 26 / 100 epoch, with learning rate 0.046650635094610975
+[09/16 22:32:25][INFO] visual_prompt:  220: Epoch 26 / 100: avg data time: 4.23e-02, avg batch time: 0.5556, average train loss: 1.3551
+[09/16 22:32:28][INFO] visual_prompt:  325: Inference (val):avg data time: 3.78e-05, avg batch time: 0.2308, average loss: 1.3673
+[09/16 22:32:28][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 83.50	top5: 98.00	
+[09/16 22:32:43][INFO] visual_prompt:  325: Inference (test):avg data time: 1.38e-04, avg batch time: 0.2424, average loss: 1.3643
+[09/16 22:32:43][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 82.76	top5: 97.88	
+[09/16 22:32:43][INFO] visual_prompt:  247: Best epoch 26: best metric: 0.835
+[09/16 22:32:43][INFO] visual_prompt:  166: Training 27 / 100 epoch, with learning rate 0.04620120240391065
+[09/16 22:33:07][INFO] visual_prompt:  220: Epoch 27 / 100: avg data time: 4.12e-02, avg batch time: 0.5549, average train loss: 1.3570
+[09/16 22:33:10][INFO] visual_prompt:  325: Inference (val):avg data time: 4.84e-05, avg batch time: 0.2301, average loss: 1.3850
+[09/16 22:33:10][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 81.67	top5: 97.67	
+[09/16 22:33:26][INFO] visual_prompt:  325: Inference (test):avg data time: 9.14e-05, avg batch time: 0.2414, average loss: 1.3763
+[09/16 22:33:26][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 81.76	top5: 97.93	
+[09/16 22:33:26][INFO] visual_prompt:  166: Training 28 / 100 epoch, with learning rate 0.04572593931387604
+[09/16 22:33:50][INFO] visual_prompt:  220: Epoch 28 / 100: avg data time: 4.36e-02, avg batch time: 0.5572, average train loss: 1.3722
+[09/16 22:33:53][INFO] visual_prompt:  325: Inference (val):avg data time: 6.84e-05, avg batch time: 0.2306, average loss: 1.3390
+[09/16 22:33:53][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 83.17	top5: 97.83	
+[09/16 22:34:09][INFO] visual_prompt:  325: Inference (test):avg data time: 1.22e-04, avg batch time: 0.2412, average loss: 1.3295
+[09/16 22:34:09][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 82.79	top5: 97.91	
+[09/16 22:34:09][INFO] visual_prompt:  166: Training 29 / 100 epoch, with learning rate 0.04522542485937369
+[09/16 22:34:33][INFO] visual_prompt:  220: Epoch 29 / 100: avg data time: 3.95e-02, avg batch time: 0.5521, average train loss: 1.3209
+[09/16 22:34:36][INFO] visual_prompt:  325: Inference (val):avg data time: 6.30e-05, avg batch time: 0.2300, average loss: 1.3135
+[09/16 22:34:36][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 83.50	top5: 97.33	
+[09/16 22:34:51][INFO] visual_prompt:  325: Inference (test):avg data time: 1.21e-04, avg batch time: 0.2404, average loss: 1.2985
+[09/16 22:34:51][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 82.26	top5: 97.88	
+[09/16 22:34:51][INFO] visual_prompt:  166: Training 30 / 100 epoch, with learning rate 0.04470026884016805
+[09/16 22:35:15][INFO] visual_prompt:  220: Epoch 30 / 100: avg data time: 4.32e-02, avg batch time: 0.5566, average train loss: 1.3261
+[09/16 22:35:18][INFO] visual_prompt:  325: Inference (val):avg data time: 5.85e-05, avg batch time: 0.2324, average loss: 1.3046
+[09/16 22:35:18][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 83.00	top5: 98.17	
+[09/16 22:35:33][INFO] visual_prompt:  325: Inference (test):avg data time: 9.18e-05, avg batch time: 0.2414, average loss: 1.2953
+[09/16 22:35:33][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 82.08	top5: 97.89	
+[09/16 22:35:33][INFO] visual_prompt:  166: Training 31 / 100 epoch, with learning rate 0.04415111107797445
+[09/16 22:35:57][INFO] visual_prompt:  220: Epoch 31 / 100: avg data time: 3.99e-02, avg batch time: 0.5537, average train loss: 1.3181
+[09/16 22:36:00][INFO] visual_prompt:  325: Inference (val):avg data time: 4.48e-05, avg batch time: 0.2317, average loss: 1.3345
+[09/16 22:36:00][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 82.33	top5: 98.00	
+[09/16 22:36:15][INFO] visual_prompt:  325: Inference (test):avg data time: 1.46e-04, avg batch time: 0.2417, average loss: 1.3330
+[09/16 22:36:15][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 82.05	top5: 97.74	
+[09/16 22:36:15][INFO] visual_prompt:  166: Training 32 / 100 epoch, with learning rate 0.04357862063693486
+[09/16 22:36:39][INFO] visual_prompt:  220: Epoch 32 / 100: avg data time: 4.03e-02, avg batch time: 0.5542, average train loss: 1.3053
+[09/16 22:36:42][INFO] visual_prompt:  325: Inference (val):avg data time: 5.70e-05, avg batch time: 0.2309, average loss: 1.3019
+[09/16 22:36:42][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 83.83	top5: 98.00	
+[09/16 22:36:56][INFO] visual_prompt:  325: Inference (test):avg data time: 9.22e-05, avg batch time: 0.2421, average loss: 1.2910
+[09/16 22:36:56][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 82.98	top5: 97.86	
+[09/16 22:36:56][INFO] visual_prompt:  247: Best epoch 32: best metric: 0.838
+[09/16 22:36:56][INFO] visual_prompt:  166: Training 33 / 100 epoch, with learning rate 0.04298349500846628
+[09/16 22:37:20][INFO] visual_prompt:  220: Epoch 33 / 100: avg data time: 4.01e-02, avg batch time: 0.5542, average train loss: 1.3154
+[09/16 22:37:23][INFO] visual_prompt:  325: Inference (val):avg data time: 5.11e-05, avg batch time: 0.2307, average loss: 1.3273
+[09/16 22:37:23][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 81.33	top5: 98.17	
+[09/16 22:37:38][INFO] visual_prompt:  325: Inference (test):avg data time: 1.10e-04, avg batch time: 0.2419, average loss: 1.3171
+[09/16 22:37:38][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 81.48	top5: 97.84	
+[09/16 22:37:38][INFO] visual_prompt:  166: Training 34 / 100 epoch, with learning rate 0.042366459261474934
+[09/16 22:38:02][INFO] visual_prompt:  220: Epoch 34 / 100: avg data time: 3.95e-02, avg batch time: 0.5532, average train loss: 1.3067
+[09/16 22:38:05][INFO] visual_prompt:  325: Inference (val):avg data time: 3.51e-05, avg batch time: 0.2304, average loss: 1.3624
+[09/16 22:38:05][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 80.50	top5: 97.33	
+[09/16 22:38:21][INFO] visual_prompt:  325: Inference (test):avg data time: 1.43e-04, avg batch time: 0.2422, average loss: 1.3559
+[09/16 22:38:21][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 81.15	top5: 97.45	
+[09/16 22:38:21][INFO] visual_prompt:  166: Training 35 / 100 epoch, with learning rate 0.04172826515897146
+[09/16 22:38:45][INFO] visual_prompt:  220: Epoch 35 / 100: avg data time: 4.08e-02, avg batch time: 0.5544, average train loss: 1.3015
+[09/16 22:38:48][INFO] visual_prompt:  325: Inference (val):avg data time: 7.78e-05, avg batch time: 0.2318, average loss: 1.2824
+[09/16 22:38:48][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 83.67	top5: 96.83	
+[09/16 22:39:04][INFO] visual_prompt:  325: Inference (test):avg data time: 1.22e-04, avg batch time: 0.2416, average loss: 1.2840
+[09/16 22:39:04][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 82.91	top5: 97.81	
+[09/16 22:39:04][INFO] visual_prompt:  166: Training 36 / 100 epoch, with learning rate 0.04106969024216348
+[09/16 22:39:28][INFO] visual_prompt:  220: Epoch 36 / 100: avg data time: 4.31e-02, avg batch time: 0.5564, average train loss: 1.2870
+[09/16 22:39:31][INFO] visual_prompt:  325: Inference (val):avg data time: 4.59e-05, avg batch time: 0.2319, average loss: 1.2814
+[09/16 22:39:31][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 83.17	top5: 97.33	
+[09/16 22:39:45][INFO] visual_prompt:  325: Inference (test):avg data time: 1.29e-04, avg batch time: 0.2414, average loss: 1.2785
+[09/16 22:39:46][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 82.45	top5: 97.86	
+[09/16 22:39:46][INFO] visual_prompt:  166: Training 37 / 100 epoch, with learning rate 0.040391536883141455
+[09/16 22:40:09][INFO] visual_prompt:  220: Epoch 37 / 100: avg data time: 4.12e-02, avg batch time: 0.5547, average train loss: 1.3083
+[09/16 22:40:12][INFO] visual_prompt:  325: Inference (val):avg data time: 3.96e-05, avg batch time: 0.2310, average loss: 1.3046
+[09/16 22:40:12][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 82.67	top5: 98.00	
+[09/16 22:40:27][INFO] visual_prompt:  325: Inference (test):avg data time: 9.94e-05, avg batch time: 0.2420, average loss: 1.2967
+[09/16 22:40:28][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 82.74	top5: 97.96	
+[09/16 22:40:28][INFO] visual_prompt:  166: Training 38 / 100 epoch, with learning rate 0.03969463130731183
+[09/16 22:40:52][INFO] visual_prompt:  220: Epoch 38 / 100: avg data time: 4.11e-02, avg batch time: 0.5549, average train loss: 1.2841
+[09/16 22:40:55][INFO] visual_prompt:  325: Inference (val):avg data time: 3.82e-05, avg batch time: 0.2304, average loss: 1.2986
+[09/16 22:40:55][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 81.83	top5: 97.83	
+[09/16 22:41:09][INFO] visual_prompt:  325: Inference (test):avg data time: 1.15e-04, avg batch time: 0.2417, average loss: 1.2835
+[09/16 22:41:09][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 82.76	top5: 98.03	
+[09/16 22:41:09][INFO] visual_prompt:  166: Training 39 / 100 epoch, with learning rate 0.03897982258676867
+[09/16 22:41:33][INFO] visual_prompt:  220: Epoch 39 / 100: avg data time: 4.13e-02, avg batch time: 0.5554, average train loss: 1.2708
+[09/16 22:41:37][INFO] visual_prompt:  325: Inference (val):avg data time: 6.39e-05, avg batch time: 0.2303, average loss: 1.2834
+[09/16 22:41:37][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 82.50	top5: 97.67	
+[09/16 22:41:52][INFO] visual_prompt:  325: Inference (test):avg data time: 1.06e-04, avg batch time: 0.2421, average loss: 1.2756
+[09/16 22:41:52][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 82.93	top5: 98.03	
+[09/16 22:41:52][INFO] visual_prompt:  166: Training 40 / 100 epoch, with learning rate 0.03824798160583012
+[09/16 22:42:16][INFO] visual_prompt:  220: Epoch 40 / 100: avg data time: 4.18e-02, avg batch time: 0.5558, average train loss: 1.2749
+[09/16 22:42:19][INFO] visual_prompt:  325: Inference (val):avg data time: 4.45e-05, avg batch time: 0.2301, average loss: 1.2876
+[09/16 22:42:19][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 84.83	top5: 97.83	
+[09/16 22:42:34][INFO] visual_prompt:  325: Inference (test):avg data time: 9.96e-05, avg batch time: 0.2411, average loss: 1.2780
+[09/16 22:42:34][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 82.83	top5: 97.83	
+[09/16 22:42:34][INFO] visual_prompt:  247: Best epoch 40: best metric: 0.848
+[09/16 22:42:34][INFO] visual_prompt:  166: Training 41 / 100 epoch, with learning rate 0.037500000000000006
+[09/16 22:42:58][INFO] visual_prompt:  220: Epoch 41 / 100: avg data time: 3.82e-02, avg batch time: 0.5532, average train loss: 1.2913
+[09/16 22:43:01][INFO] visual_prompt:  325: Inference (val):avg data time: 4.66e-05, avg batch time: 0.2308, average loss: 1.2667
+[09/16 22:43:01][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 84.67	top5: 97.33	
+[09/16 22:43:16][INFO] visual_prompt:  325: Inference (test):avg data time: 1.22e-04, avg batch time: 0.2418, average loss: 1.2646
+[09/16 22:43:16][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.05	top5: 98.00	
+[09/16 22:43:16][INFO] visual_prompt:  166: Training 42 / 100 epoch, with learning rate 0.03673678906964727
+[09/16 22:43:40][INFO] visual_prompt:  220: Epoch 42 / 100: avg data time: 4.01e-02, avg batch time: 0.5544, average train loss: 1.2694
+[09/16 22:43:43][INFO] visual_prompt:  325: Inference (val):avg data time: 5.02e-05, avg batch time: 0.2306, average loss: 1.2918
+[09/16 22:43:43][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 85.17	top5: 97.83	
+[09/16 22:43:58][INFO] visual_prompt:  325: Inference (test):avg data time: 1.35e-04, avg batch time: 0.2417, average loss: 1.2802
+[09/16 22:43:58][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 83.64	top5: 98.08	
+[09/16 22:43:58][INFO] visual_prompt:  247: Best epoch 42: best metric: 0.852
+[09/16 22:43:58][INFO] visual_prompt:  166: Training 43 / 100 epoch, with learning rate 0.03595927866972694
+[09/16 22:44:22][INFO] visual_prompt:  220: Epoch 43 / 100: avg data time: 3.98e-02, avg batch time: 0.5541, average train loss: 1.2554
+[09/16 22:44:25][INFO] visual_prompt:  325: Inference (val):avg data time: 7.14e-05, avg batch time: 0.2324, average loss: 1.2990
+[09/16 22:44:25][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 82.50	top5: 97.17	
+[09/16 22:44:40][INFO] visual_prompt:  325: Inference (test):avg data time: 1.03e-04, avg batch time: 0.2417, average loss: 1.2887
+[09/16 22:44:41][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 82.53	top5: 97.76	
+[09/16 22:44:41][INFO] visual_prompt:  166: Training 44 / 100 epoch, with learning rate 0.03516841607689501
+[09/16 22:45:04][INFO] visual_prompt:  220: Epoch 44 / 100: avg data time: 4.06e-02, avg batch time: 0.5544, average train loss: 1.2461
+[09/16 22:45:07][INFO] visual_prompt:  325: Inference (val):avg data time: 7.46e-05, avg batch time: 0.2314, average loss: 1.2773
+[09/16 22:45:07][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 81.67	top5: 98.17	
+[09/16 22:45:22][INFO] visual_prompt:  325: Inference (test):avg data time: 1.04e-04, avg batch time: 0.2425, average loss: 1.2813
+[09/16 22:45:22][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 81.91	top5: 97.60	
+[09/16 22:45:22][INFO] visual_prompt:  166: Training 45 / 100 epoch, with learning rate 0.0343651648353978
+[09/16 22:45:47][INFO] visual_prompt:  220: Epoch 45 / 100: avg data time: 4.19e-02, avg batch time: 0.5569, average train loss: 1.2661
+[09/16 22:45:50][INFO] visual_prompt:  325: Inference (val):avg data time: 2.86e-05, avg batch time: 0.2306, average loss: 1.2853
+[09/16 22:45:50][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 83.50	top5: 97.67	
+[09/16 22:46:05][INFO] visual_prompt:  325: Inference (test):avg data time: 1.43e-04, avg batch time: 0.2421, average loss: 1.2833
+[09/16 22:46:05][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 82.50	top5: 97.93	
+[09/16 22:46:05][INFO] visual_prompt:  166: Training 46 / 100 epoch, with learning rate 0.033550503583141725
+[09/16 22:46:29][INFO] visual_prompt:  220: Epoch 46 / 100: avg data time: 4.04e-02, avg batch time: 0.5555, average train loss: 1.2577
+[09/16 22:46:32][INFO] visual_prompt:  325: Inference (val):avg data time: 5.38e-05, avg batch time: 0.2310, average loss: 1.2411
+[09/16 22:46:32][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 83.83	top5: 97.67	
+[09/16 22:46:48][INFO] visual_prompt:  325: Inference (test):avg data time: 1.08e-04, avg batch time: 0.2421, average loss: 1.2424
+[09/16 22:46:48][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 83.45	top5: 97.96	
+[09/16 22:46:48][INFO] visual_prompt:  166: Training 47 / 100 epoch, with learning rate 0.032725424859373686
+[09/16 22:47:12][INFO] visual_prompt:  220: Epoch 47 / 100: avg data time: 4.16e-02, avg batch time: 0.5559, average train loss: 1.2279
+[09/16 22:47:15][INFO] visual_prompt:  325: Inference (val):avg data time: 4.71e-05, avg batch time: 0.2310, average loss: 1.2528
+[09/16 22:47:15][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 85.17	top5: 97.67	
+[09/16 22:47:30][INFO] visual_prompt:  325: Inference (test):avg data time: 1.11e-04, avg batch time: 0.2422, average loss: 1.2494
+[09/16 22:47:30][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 83.86	top5: 97.83	
+[09/16 22:47:30][INFO] visual_prompt:  166: Training 48 / 100 epoch, with learning rate 0.03189093389542498
+[09/16 22:47:54][INFO] visual_prompt:  220: Epoch 48 / 100: avg data time: 4.23e-02, avg batch time: 0.5570, average train loss: 1.2425
+[09/16 22:47:57][INFO] visual_prompt:  325: Inference (val):avg data time: 6.78e-05, avg batch time: 0.2312, average loss: 1.2839
+[09/16 22:47:57][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 85.00	top5: 97.50	
+[09/16 22:48:12][INFO] visual_prompt:  325: Inference (test):avg data time: 1.57e-04, avg batch time: 0.2418, average loss: 1.2745
+[09/16 22:48:12][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 83.17	top5: 97.70	
+[09/16 22:48:12][INFO] visual_prompt:  166: Training 49 / 100 epoch, with learning rate 0.03104804738999169
+[09/16 22:48:36][INFO] visual_prompt:  220: Epoch 49 / 100: avg data time: 4.11e-02, avg batch time: 0.5548, average train loss: 1.2391
+[09/16 22:48:39][INFO] visual_prompt:  325: Inference (val):avg data time: 4.73e-05, avg batch time: 0.2306, average loss: 1.2607
+[09/16 22:48:39][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 84.00	top5: 97.17	
+[09/16 22:48:54][INFO] visual_prompt:  325: Inference (test):avg data time: 8.60e-05, avg batch time: 0.2415, average loss: 1.2613
+[09/16 22:48:54][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 82.50	top5: 97.48	
+[09/16 22:48:54][INFO] visual_prompt:  166: Training 50 / 100 epoch, with learning rate 0.03019779227044398
+[09/16 22:49:18][INFO] visual_prompt:  220: Epoch 50 / 100: avg data time: 4.26e-02, avg batch time: 0.5570, average train loss: 1.2439
+[09/16 22:49:21][INFO] visual_prompt:  325: Inference (val):avg data time: 2.96e-05, avg batch time: 0.2306, average loss: 1.2510
+[09/16 22:49:21][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 83.83	top5: 98.00	
+[09/16 22:49:36][INFO] visual_prompt:  325: Inference (test):avg data time: 1.15e-04, avg batch time: 0.2420, average loss: 1.2402
+[09/16 22:49:36][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.07	top5: 97.84	
+[09/16 22:49:36][INFO] visual_prompt:  166: Training 51 / 100 epoch, with learning rate 0.029341204441673263
+[09/16 22:50:00][INFO] visual_prompt:  220: Epoch 51 / 100: avg data time: 4.32e-02, avg batch time: 0.5574, average train loss: 1.2288
+[09/16 22:50:03][INFO] visual_prompt:  325: Inference (val):avg data time: 4.37e-05, avg batch time: 0.2305, average loss: 1.2373
+[09/16 22:50:03][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 84.50	top5: 98.17	
+[09/16 22:50:19][INFO] visual_prompt:  325: Inference (test):avg data time: 1.34e-04, avg batch time: 0.2419, average loss: 1.2377
+[09/16 22:50:19][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 83.76	top5: 97.96	
+[09/16 22:50:19][INFO] visual_prompt:  166: Training 52 / 100 epoch, with learning rate 0.028479327524001636
+[09/16 22:50:43][INFO] visual_prompt:  220: Epoch 52 / 100: avg data time: 3.86e-02, avg batch time: 0.5529, average train loss: 1.2137
+[09/16 22:50:46][INFO] visual_prompt:  325: Inference (val):avg data time: 6.45e-05, avg batch time: 0.2311, average loss: 1.2561
+[09/16 22:50:46][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 84.67	top5: 98.33	
+[09/16 22:51:01][INFO] visual_prompt:  325: Inference (test):avg data time: 1.29e-04, avg batch time: 0.2423, average loss: 1.2469
+[09/16 22:51:01][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 83.26	top5: 98.05	
+[09/16 22:51:01][INFO] visual_prompt:  166: Training 53 / 100 epoch, with learning rate 0.02761321158169134
+[09/16 22:51:25][INFO] visual_prompt:  220: Epoch 53 / 100: avg data time: 4.02e-02, avg batch time: 0.5544, average train loss: 1.2187
+[09/16 22:51:28][INFO] visual_prompt:  325: Inference (val):avg data time: 5.25e-05, avg batch time: 0.2305, average loss: 1.2606
+[09/16 22:51:28][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 84.50	top5: 98.00	
+[09/16 22:51:42][INFO] visual_prompt:  325: Inference (test):avg data time: 1.15e-04, avg batch time: 0.2419, average loss: 1.2627
+[09/16 22:51:42][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 83.55	top5: 97.77	
+[09/16 22:51:42][INFO] visual_prompt:  166: Training 54 / 100 epoch, with learning rate 0.02674391184360313
+[09/16 22:52:06][INFO] visual_prompt:  220: Epoch 54 / 100: avg data time: 4.50e-02, avg batch time: 0.5594, average train loss: 1.2471
+[09/16 22:52:09][INFO] visual_prompt:  325: Inference (val):avg data time: 4.01e-05, avg batch time: 0.2307, average loss: 1.2489
+[09/16 22:52:09][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 82.83	top5: 97.67	
+[09/16 22:52:24][INFO] visual_prompt:  325: Inference (test):avg data time: 1.26e-04, avg batch time: 0.2421, average loss: 1.2408
+[09/16 22:52:24][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 82.76	top5: 97.84	
+[09/16 22:52:24][INFO] visual_prompt:  166: Training 55 / 100 epoch, with learning rate 0.02587248741756253
+[09/16 22:52:48][INFO] visual_prompt:  220: Epoch 55 / 100: avg data time: 3.93e-02, avg batch time: 0.5541, average train loss: 1.2067
+[09/16 22:52:51][INFO] visual_prompt:  325: Inference (val):avg data time: 4.15e-05, avg batch time: 0.2307, average loss: 1.2800
+[09/16 22:52:51][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 83.17	top5: 97.33	
+[09/16 22:53:07][INFO] visual_prompt:  325: Inference (test):avg data time: 1.31e-04, avg batch time: 0.2419, average loss: 1.2754
+[09/16 22:53:08][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 81.71	top5: 97.70	
+[09/16 22:53:08][INFO] visual_prompt:  166: Training 56 / 100 epoch, with learning rate 0.025
+[09/16 22:53:31][INFO] visual_prompt:  220: Epoch 56 / 100: avg data time: 3.89e-02, avg batch time: 0.5531, average train loss: 1.2083
+[09/16 22:53:34][INFO] visual_prompt:  325: Inference (val):avg data time: 5.55e-05, avg batch time: 0.2322, average loss: 1.2244
+[09/16 22:53:34][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 86.00	top5: 97.83	
+[09/16 22:53:49][INFO] visual_prompt:  325: Inference (test):avg data time: 1.20e-04, avg batch time: 0.2422, average loss: 1.2270
+[09/16 22:53:49][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 83.50	top5: 97.93	
+[09/16 22:53:49][INFO] visual_prompt:  247: Best epoch 56: best metric: 0.860
+[09/16 22:53:49][INFO] visual_prompt:  166: Training 57 / 100 epoch, with learning rate 0.024127512582437484
+[09/16 22:54:13][INFO] visual_prompt:  220: Epoch 57 / 100: avg data time: 4.02e-02, avg batch time: 0.5546, average train loss: 1.1974
+[09/16 22:54:16][INFO] visual_prompt:  325: Inference (val):avg data time: 7.70e-05, avg batch time: 0.2308, average loss: 1.2416
+[09/16 22:54:16][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 85.00	top5: 97.67	
+[09/16 22:54:31][INFO] visual_prompt:  325: Inference (test):avg data time: 1.10e-04, avg batch time: 0.2418, average loss: 1.2354
+[09/16 22:54:31][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.10	top5: 97.88	
+[09/16 22:54:31][INFO] visual_prompt:  166: Training 58 / 100 epoch, with learning rate 0.02325608815639687
+[09/16 22:54:55][INFO] visual_prompt:  220: Epoch 58 / 100: avg data time: 4.03e-02, avg batch time: 0.5547, average train loss: 1.1951
+[09/16 22:54:58][INFO] visual_prompt:  325: Inference (val):avg data time: 4.79e-05, avg batch time: 0.2305, average loss: 1.2570
+[09/16 22:54:58][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 85.17	top5: 97.50	
+[09/16 22:55:13][INFO] visual_prompt:  325: Inference (test):avg data time: 1.14e-04, avg batch time: 0.2419, average loss: 1.2503
+[09/16 22:55:13][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 83.48	top5: 97.79	
+[09/16 22:55:13][INFO] visual_prompt:  166: Training 59 / 100 epoch, with learning rate 0.02238678841830867
+[09/16 22:55:37][INFO] visual_prompt:  220: Epoch 59 / 100: avg data time: 4.23e-02, avg batch time: 0.5564, average train loss: 1.1815
+[09/16 22:55:40][INFO] visual_prompt:  325: Inference (val):avg data time: 5.43e-05, avg batch time: 0.2307, average loss: 1.2189
+[09/16 22:55:40][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 86.00	top5: 98.00	
+[09/16 22:55:54][INFO] visual_prompt:  325: Inference (test):avg data time: 1.41e-04, avg batch time: 0.2419, average loss: 1.2263
+[09/16 22:55:54][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 83.36	top5: 97.93	
+[09/16 22:55:54][INFO] visual_prompt:  166: Training 60 / 100 epoch, with learning rate 0.02152067247599837
+[09/16 22:56:18][INFO] visual_prompt:  220: Epoch 60 / 100: avg data time: 4.24e-02, avg batch time: 0.5574, average train loss: 1.1975
+[09/16 22:56:21][INFO] visual_prompt:  325: Inference (val):avg data time: 4.77e-05, avg batch time: 0.2304, average loss: 1.2160
+[09/16 22:56:22][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 83.17	top5: 97.83	
+[09/16 22:56:38][INFO] visual_prompt:  325: Inference (test):avg data time: 1.09e-04, avg batch time: 0.2419, average loss: 1.2156
+[09/16 22:56:38][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 83.47	top5: 97.76	
+[09/16 22:56:38][INFO] visual_prompt:  166: Training 61 / 100 epoch, with learning rate 0.020658795558326743
+[09/16 22:57:02][INFO] visual_prompt:  220: Epoch 61 / 100: avg data time: 4.10e-02, avg batch time: 0.5552, average train loss: 1.1809
+[09/16 22:57:05][INFO] visual_prompt:  325: Inference (val):avg data time: 5.98e-05, avg batch time: 0.2306, average loss: 1.2181
+[09/16 22:57:05][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 86.00	top5: 98.00	
+[09/16 22:57:20][INFO] visual_prompt:  325: Inference (test):avg data time: 1.09e-04, avg batch time: 0.2422, average loss: 1.2238
+[09/16 22:57:20][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.24	top5: 98.03	
+[09/16 22:57:20][INFO] visual_prompt:  166: Training 62 / 100 epoch, with learning rate 0.019802207729556022
+[09/16 22:57:44][INFO] visual_prompt:  220: Epoch 62 / 100: avg data time: 4.58e-02, avg batch time: 0.5601, average train loss: 1.1778
+[09/16 22:57:47][INFO] visual_prompt:  325: Inference (val):avg data time: 4.22e-05, avg batch time: 0.2307, average loss: 1.2439
+[09/16 22:57:47][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 84.83	top5: 97.83	
+[09/16 22:58:02][INFO] visual_prompt:  325: Inference (test):avg data time: 1.07e-04, avg batch time: 0.2416, average loss: 1.2396
+[09/16 22:58:02][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 82.88	top5: 97.91	
+[09/16 22:58:02][INFO] visual_prompt:  166: Training 63 / 100 epoch, with learning rate 0.018951952610008312
+[09/16 22:58:26][INFO] visual_prompt:  220: Epoch 63 / 100: avg data time: 4.11e-02, avg batch time: 0.5560, average train loss: 1.1730
+[09/16 22:58:29][INFO] visual_prompt:  325: Inference (val):avg data time: 3.86e-05, avg batch time: 0.2321, average loss: 1.2301
+[09/16 22:58:29][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 85.33	top5: 97.83	
+[09/16 22:58:45][INFO] visual_prompt:  325: Inference (test):avg data time: 9.03e-05, avg batch time: 0.2421, average loss: 1.2219
+[09/16 22:58:45][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 83.40	top5: 97.91	
+[09/16 22:58:45][INFO] visual_prompt:  166: Training 64 / 100 epoch, with learning rate 0.018109066104575022
+[09/16 22:59:09][INFO] visual_prompt:  220: Epoch 64 / 100: avg data time: 3.89e-02, avg batch time: 0.5539, average train loss: 1.1692
+[09/16 22:59:11][INFO] visual_prompt:  325: Inference (val):avg data time: 4.94e-05, avg batch time: 0.2310, average loss: 1.2255
+[09/16 22:59:11][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 84.33	top5: 98.00	
+[09/16 22:59:28][INFO] visual_prompt:  325: Inference (test):avg data time: 1.60e-04, avg batch time: 0.2418, average loss: 1.2368
+[09/16 22:59:28][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 83.26	top5: 97.86	
+[09/16 22:59:28][INFO] visual_prompt:  166: Training 65 / 100 epoch, with learning rate 0.017274575140626316
+[09/16 22:59:52][INFO] visual_prompt:  220: Epoch 65 / 100: avg data time: 4.12e-02, avg batch time: 0.5560, average train loss: 1.1596
+[09/16 22:59:55][INFO] visual_prompt:  325: Inference (val):avg data time: 4.33e-05, avg batch time: 0.2312, average loss: 1.2106
+[09/16 22:59:55][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 85.17	top5: 97.67	
+[09/16 23:00:09][INFO] visual_prompt:  325: Inference (test):avg data time: 1.47e-04, avg batch time: 0.2420, average loss: 1.2125
+[09/16 23:00:09][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 83.31	top5: 97.95	
+[09/16 23:00:09][INFO] visual_prompt:  166: Training 66 / 100 epoch, with learning rate 0.016449496416858285
+[09/16 23:00:33][INFO] visual_prompt:  220: Epoch 66 / 100: avg data time: 3.99e-02, avg batch time: 0.5541, average train loss: 1.1554
+[09/16 23:00:36][INFO] visual_prompt:  325: Inference (val):avg data time: 4.04e-05, avg batch time: 0.2312, average loss: 1.2076
+[09/16 23:00:36][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 84.83	top5: 97.33	
+[09/16 23:00:52][INFO] visual_prompt:  325: Inference (test):avg data time: 9.77e-05, avg batch time: 0.2423, average loss: 1.2033
+[09/16 23:00:52][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 83.69	top5: 97.79	
+[09/16 23:00:52][INFO] visual_prompt:  166: Training 67 / 100 epoch, with learning rate 0.0156348351646022
+[09/16 23:01:16][INFO] visual_prompt:  220: Epoch 67 / 100: avg data time: 4.01e-02, avg batch time: 0.5546, average train loss: 1.1610
+[09/16 23:01:19][INFO] visual_prompt:  325: Inference (val):avg data time: 4.38e-05, avg batch time: 0.2319, average loss: 1.2226
+[09/16 23:01:19][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 84.83	top5: 97.67	
+[09/16 23:01:35][INFO] visual_prompt:  325: Inference (test):avg data time: 1.22e-04, avg batch time: 0.2417, average loss: 1.2261
+[09/16 23:01:35][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 83.57	top5: 97.88	
+[09/16 23:01:35][INFO] visual_prompt:  166: Training 68 / 100 epoch, with learning rate 0.014831583923105
+[09/16 23:01:59][INFO] visual_prompt:  220: Epoch 68 / 100: avg data time: 3.95e-02, avg batch time: 0.5536, average train loss: 1.1599
+[09/16 23:02:02][INFO] visual_prompt:  325: Inference (val):avg data time: 4.84e-05, avg batch time: 0.2308, average loss: 1.2234
+[09/16 23:02:02][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 83.83	top5: 97.17	
+[09/16 23:02:18][INFO] visual_prompt:  325: Inference (test):avg data time: 9.77e-05, avg batch time: 0.2417, average loss: 1.2208
+[09/16 23:02:18][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 83.79	top5: 98.00	
+[09/16 23:02:18][INFO] visual_prompt:  166: Training 69 / 100 epoch, with learning rate 0.014040721330273063
+[09/16 23:02:41][INFO] visual_prompt:  220: Epoch 69 / 100: avg data time: 3.87e-02, avg batch time: 0.5527, average train loss: 1.1505
+[09/16 23:02:44][INFO] visual_prompt:  325: Inference (val):avg data time: 3.69e-05, avg batch time: 0.2304, average loss: 1.2177
+[09/16 23:02:44][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 83.33	top5: 97.17	
+[09/16 23:03:00][INFO] visual_prompt:  325: Inference (test):avg data time: 1.19e-04, avg batch time: 0.2419, average loss: 1.2166
+[09/16 23:03:00][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 83.55	top5: 97.86	
+[09/16 23:03:00][INFO] visual_prompt:  166: Training 70 / 100 epoch, with learning rate 0.013263210930352737
+[09/16 23:03:24][INFO] visual_prompt:  220: Epoch 70 / 100: avg data time: 3.93e-02, avg batch time: 0.5535, average train loss: 1.1393
+[09/16 23:03:27][INFO] visual_prompt:  325: Inference (val):avg data time: 3.52e-05, avg batch time: 0.2301, average loss: 1.2039
+[09/16 23:03:27][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 82.83	top5: 97.83	
+[09/16 23:03:41][INFO] visual_prompt:  325: Inference (test):avg data time: 9.87e-05, avg batch time: 0.2419, average loss: 1.2054
+[09/16 23:03:41][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 83.69	top5: 97.84	
+[09/16 23:03:41][INFO] visual_prompt:  166: Training 71 / 100 epoch, with learning rate 0.012500000000000006
+[09/16 23:04:05][INFO] visual_prompt:  220: Epoch 71 / 100: avg data time: 4.24e-02, avg batch time: 0.5566, average train loss: 1.1336
+[09/16 23:04:08][INFO] visual_prompt:  325: Inference (val):avg data time: 5.55e-05, avg batch time: 0.2311, average loss: 1.2056
+[09/16 23:04:08][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 84.00	top5: 98.00	
+[09/16 23:04:23][INFO] visual_prompt:  325: Inference (test):avg data time: 9.96e-05, avg batch time: 0.2421, average loss: 1.2059
+[09/16 23:04:23][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.45	top5: 97.81	
+[09/16 23:04:23][INFO] visual_prompt:  166: Training 72 / 100 epoch, with learning rate 0.01175201839416988
+[09/16 23:04:47][INFO] visual_prompt:  220: Epoch 72 / 100: avg data time: 4.17e-02, avg batch time: 0.5562, average train loss: 1.1317
+[09/16 23:04:50][INFO] visual_prompt:  325: Inference (val):avg data time: 5.03e-05, avg batch time: 0.2307, average loss: 1.2156
+[09/16 23:04:50][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 84.67	top5: 97.83	
+[09/16 23:05:05][INFO] visual_prompt:  325: Inference (test):avg data time: 1.35e-04, avg batch time: 0.2419, average loss: 1.2120
+[09/16 23:05:05][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 83.69	top5: 97.70	
+[09/16 23:05:05][INFO] visual_prompt:  166: Training 73 / 100 epoch, with learning rate 0.011020177413231334
+[09/16 23:05:30][INFO] visual_prompt:  220: Epoch 73 / 100: avg data time: 4.38e-02, avg batch time: 0.5582, average train loss: 1.1316
+[09/16 23:05:33][INFO] visual_prompt:  325: Inference (val):avg data time: 4.44e-05, avg batch time: 0.2310, average loss: 1.1897
+[09/16 23:05:33][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 84.83	top5: 98.17	
+[09/16 23:05:48][INFO] visual_prompt:  325: Inference (test):avg data time: 1.06e-04, avg batch time: 0.2418, average loss: 1.1898
+[09/16 23:05:48][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.40	top5: 97.96	
+[09/16 23:05:48][INFO] visual_prompt:  166: Training 74 / 100 epoch, with learning rate 0.010305368692688175
+[09/16 23:06:12][INFO] visual_prompt:  220: Epoch 74 / 100: avg data time: 4.18e-02, avg batch time: 0.5556, average train loss: 1.1190
+[09/16 23:06:15][INFO] visual_prompt:  325: Inference (val):avg data time: 5.16e-05, avg batch time: 0.2308, average loss: 1.1866
+[09/16 23:06:15][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 85.17	top5: 97.50	
+[09/16 23:06:30][INFO] visual_prompt:  325: Inference (test):avg data time: 1.04e-04, avg batch time: 0.2417, average loss: 1.1862
+[09/16 23:06:30][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.85	top5: 97.95	
+[09/16 23:06:30][INFO] visual_prompt:  166: Training 75 / 100 epoch, with learning rate 0.009608463116858543
+[09/16 23:06:54][INFO] visual_prompt:  220: Epoch 75 / 100: avg data time: 4.03e-02, avg batch time: 0.5542, average train loss: 1.1062
+[09/16 23:06:57][INFO] visual_prompt:  325: Inference (val):avg data time: 7.61e-05, avg batch time: 0.2305, average loss: 1.1951
+[09/16 23:06:57][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 84.83	top5: 96.83	
+[09/16 23:07:12][INFO] visual_prompt:  325: Inference (test):avg data time: 1.22e-04, avg batch time: 0.2413, average loss: 1.1816
+[09/16 23:07:12][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.41	top5: 97.89	
+[09/16 23:07:12][INFO] visual_prompt:  166: Training 76 / 100 epoch, with learning rate 0.008930309757836517
+[09/16 23:07:36][INFO] visual_prompt:  220: Epoch 76 / 100: avg data time: 4.26e-02, avg batch time: 0.5568, average train loss: 1.1147
+[09/16 23:07:39][INFO] visual_prompt:  325: Inference (val):avg data time: 4.04e-05, avg batch time: 0.2304, average loss: 1.1924
+[09/16 23:07:39][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 83.17	top5: 97.50	
+[09/16 23:07:54][INFO] visual_prompt:  325: Inference (test):avg data time: 1.10e-04, avg batch time: 0.2418, average loss: 1.1784
+[09/16 23:07:54][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.52	top5: 98.02	
+[09/16 23:07:54][INFO] visual_prompt:  166: Training 77 / 100 epoch, with learning rate 0.008271734841028553
+[09/16 23:08:18][INFO] visual_prompt:  220: Epoch 77 / 100: avg data time: 4.08e-02, avg batch time: 0.5547, average train loss: 1.0928
+[09/16 23:08:21][INFO] visual_prompt:  325: Inference (val):avg data time: 3.77e-05, avg batch time: 0.2307, average loss: 1.1858
+[09/16 23:08:21][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 84.17	top5: 97.50	
+[09/16 23:08:35][INFO] visual_prompt:  325: Inference (test):avg data time: 1.01e-04, avg batch time: 0.2417, average loss: 1.1823
+[09/16 23:08:35][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 83.85	top5: 97.95	
+[09/16 23:08:35][INFO] visual_prompt:  166: Training 78 / 100 epoch, with learning rate 0.007633540738525066
+[09/16 23:08:59][INFO] visual_prompt:  220: Epoch 78 / 100: avg data time: 4.15e-02, avg batch time: 0.5555, average train loss: 1.1014
+[09/16 23:09:02][INFO] visual_prompt:  325: Inference (val):avg data time: 5.16e-05, avg batch time: 0.2321, average loss: 1.1868
+[09/16 23:09:02][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 85.00	top5: 97.83	
+[09/16 23:09:18][INFO] visual_prompt:  325: Inference (test):avg data time: 9.05e-05, avg batch time: 0.2420, average loss: 1.1841
+[09/16 23:09:18][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.00	top5: 97.88	
+[09/16 23:09:18][INFO] visual_prompt:  166: Training 79 / 100 epoch, with learning rate 0.0070165049915337264
+[09/16 23:09:43][INFO] visual_prompt:  220: Epoch 79 / 100: avg data time: 4.21e-02, avg batch time: 0.5556, average train loss: 1.0930
+[09/16 23:09:45][INFO] visual_prompt:  325: Inference (val):avg data time: 4.35e-05, avg batch time: 0.2309, average loss: 1.1809
+[09/16 23:09:45][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 85.83	top5: 98.00	
+[09/16 23:10:00][INFO] visual_prompt:  325: Inference (test):avg data time: 1.22e-04, avg batch time: 0.2424, average loss: 1.1882
+[09/16 23:10:00][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.09	top5: 97.96	
+[09/16 23:10:00][INFO] visual_prompt:  166: Training 80 / 100 epoch, with learning rate 0.006421379363065142
+[09/16 23:10:24][INFO] visual_prompt:  220: Epoch 80 / 100: avg data time: 4.26e-02, avg batch time: 0.5574, average train loss: 1.0880
+[09/16 23:10:27][INFO] visual_prompt:  325: Inference (val):avg data time: 5.59e-05, avg batch time: 0.2309, average loss: 1.1709
+[09/16 23:10:27][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 84.83	top5: 98.17	
+[09/16 23:10:42][INFO] visual_prompt:  325: Inference (test):avg data time: 1.07e-04, avg batch time: 0.2416, average loss: 1.1753
+[09/16 23:10:42][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.43	top5: 97.88	
+[09/16 23:10:42][INFO] visual_prompt:  166: Training 81 / 100 epoch, with learning rate 0.005848888922025553
+[09/16 23:11:06][INFO] visual_prompt:  220: Epoch 81 / 100: avg data time: 4.12e-02, avg batch time: 0.5552, average train loss: 1.0759
+[09/16 23:11:09][INFO] visual_prompt:  325: Inference (val):avg data time: 4.07e-05, avg batch time: 0.2308, average loss: 1.1754
+[09/16 23:11:09][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 85.33	top5: 97.50	
+[09/16 23:11:25][INFO] visual_prompt:  325: Inference (test):avg data time: 1.26e-04, avg batch time: 0.2417, average loss: 1.1688
+[09/16 23:11:25][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.38	top5: 97.81	
+[09/16 23:11:25][INFO] visual_prompt:  166: Training 82 / 100 epoch, with learning rate 0.005299731159831953
+[09/16 23:11:49][INFO] visual_prompt:  220: Epoch 82 / 100: avg data time: 4.37e-02, avg batch time: 0.5574, average train loss: 1.0764
+[09/16 23:11:52][INFO] visual_prompt:  325: Inference (val):avg data time: 3.91e-05, avg batch time: 0.2304, average loss: 1.1842
+[09/16 23:11:52][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 85.83	top5: 97.83	
+[09/16 23:12:07][INFO] visual_prompt:  325: Inference (test):avg data time: 1.07e-04, avg batch time: 0.2422, average loss: 1.1760
+[09/16 23:12:07][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.23	top5: 97.86	
+[09/16 23:12:07][INFO] visual_prompt:  166: Training 83 / 100 epoch, with learning rate 0.004774575140626317
+[09/16 23:12:31][INFO] visual_prompt:  220: Epoch 83 / 100: avg data time: 3.97e-02, avg batch time: 0.5538, average train loss: 1.0741
+[09/16 23:12:34][INFO] visual_prompt:  325: Inference (val):avg data time: 4.56e-05, avg batch time: 0.2306, average loss: 1.1620
+[09/16 23:12:34][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 86.00	top5: 97.67	
+[09/16 23:12:50][INFO] visual_prompt:  325: Inference (test):avg data time: 9.67e-05, avg batch time: 0.2423, average loss: 1.1598
+[09/16 23:12:50][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.62	top5: 97.93	
+[09/16 23:12:50][INFO] visual_prompt:  166: Training 84 / 100 epoch, with learning rate 0.004274060686123959
+[09/16 23:13:14][INFO] visual_prompt:  220: Epoch 84 / 100: avg data time: 4.15e-02, avg batch time: 0.5555, average train loss: 1.0652
+[09/16 23:13:17][INFO] visual_prompt:  325: Inference (val):avg data time: 6.55e-05, avg batch time: 0.2304, average loss: 1.1544
+[09/16 23:13:17][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 85.67	top5: 97.67	
+[09/16 23:13:31][INFO] visual_prompt:  325: Inference (test):avg data time: 8.88e-05, avg batch time: 0.2416, average loss: 1.1532
+[09/16 23:13:31][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.66	top5: 97.88	
+[09/16 23:13:31][INFO] visual_prompt:  166: Training 85 / 100 epoch, with learning rate 0.003798797596089351
+[09/16 23:13:55][INFO] visual_prompt:  220: Epoch 85 / 100: avg data time: 4.17e-02, avg batch time: 0.5556, average train loss: 1.0662
+[09/16 23:13:58][INFO] visual_prompt:  325: Inference (val):avg data time: 5.50e-05, avg batch time: 0.2304, average loss: 1.1683
+[09/16 23:13:58][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 84.67	top5: 98.00	
+[09/16 23:14:13][INFO] visual_prompt:  325: Inference (test):avg data time: 1.25e-04, avg batch time: 0.2423, average loss: 1.1652
+[09/16 23:14:14][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.43	top5: 97.74	
+[09/16 23:14:14][INFO] visual_prompt:  166: Training 86 / 100 epoch, with learning rate 0.0033493649053890325
+[09/16 23:14:38][INFO] visual_prompt:  220: Epoch 86 / 100: avg data time: 4.15e-02, avg batch time: 0.5569, average train loss: 1.0596
+[09/16 23:14:41][INFO] visual_prompt:  325: Inference (val):avg data time: 6.97e-05, avg batch time: 0.2314, average loss: 1.1646
+[09/16 23:14:41][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 84.17	top5: 97.83	
+[09/16 23:14:56][INFO] visual_prompt:  325: Inference (test):avg data time: 1.28e-04, avg batch time: 0.2428, average loss: 1.1573
+[09/16 23:14:56][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.74	top5: 97.98	
+[09/16 23:14:56][INFO] visual_prompt:  166: Training 87 / 100 epoch, with learning rate 0.0029263101785268254
+[09/16 23:15:20][INFO] visual_prompt:  220: Epoch 87 / 100: avg data time: 4.27e-02, avg batch time: 0.5572, average train loss: 1.0519
+[09/16 23:15:23][INFO] visual_prompt:  325: Inference (val):avg data time: 4.37e-05, avg batch time: 0.2304, average loss: 1.1566
+[09/16 23:15:23][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 86.67	top5: 97.83	
+[09/16 23:15:38][INFO] visual_prompt:  325: Inference (test):avg data time: 1.01e-04, avg batch time: 0.2423, average loss: 1.1560
+[09/16 23:15:38][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.52	top5: 97.96	
+[09/16 23:15:38][INFO] visual_prompt:  247: Best epoch 87: best metric: 0.867
+[09/16 23:15:38][INFO] visual_prompt:  166: Training 88 / 100 epoch, with learning rate 0.00253014884252083
+[09/16 23:16:02][INFO] visual_prompt:  220: Epoch 88 / 100: avg data time: 4.25e-02, avg batch time: 0.5565, average train loss: 1.0517
+[09/16 23:16:05][INFO] visual_prompt:  325: Inference (val):avg data time: 4.66e-05, avg batch time: 0.2307, average loss: 1.1524
+[09/16 23:16:05][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 84.33	top5: 98.00	
+[09/16 23:16:20][INFO] visual_prompt:  325: Inference (test):avg data time: 1.41e-04, avg batch time: 0.2417, average loss: 1.1529
+[09/16 23:16:20][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.50	top5: 97.91	
+[09/16 23:16:20][INFO] visual_prompt:  166: Training 89 / 100 epoch, with learning rate 0.0021613635589349755
+[09/16 23:16:45][INFO] visual_prompt:  220: Epoch 89 / 100: avg data time: 4.26e-02, avg batch time: 0.5568, average train loss: 1.0453
+[09/16 23:16:47][INFO] visual_prompt:  325: Inference (val):avg data time: 4.74e-05, avg batch time: 0.2306, average loss: 1.1603
+[09/16 23:16:47][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 84.50	top5: 97.83	
+[09/16 23:17:03][INFO] visual_prompt:  325: Inference (test):avg data time: 1.46e-04, avg batch time: 0.2423, average loss: 1.1537
+[09/16 23:17:03][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.59	top5: 97.83	
+[09/16 23:17:03][INFO] visual_prompt:  166: Training 90 / 100 epoch, with learning rate 0.0018204036358303172
+[09/16 23:17:27][INFO] visual_prompt:  220: Epoch 90 / 100: avg data time: 3.95e-02, avg batch time: 0.5539, average train loss: 1.0396
+[09/16 23:17:30][INFO] visual_prompt:  325: Inference (val):avg data time: 4.68e-05, avg batch time: 0.2305, average loss: 1.1507
+[09/16 23:17:30][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 85.33	top5: 97.83	
+[09/16 23:17:45][INFO] visual_prompt:  325: Inference (test):avg data time: 1.03e-04, avg batch time: 0.2418, average loss: 1.1471
+[09/16 23:17:46][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.83	top5: 97.95	
+[09/16 23:17:46][INFO] visual_prompt:  166: Training 91 / 100 epoch, with learning rate 0.0015076844803522923
+[09/16 23:18:09][INFO] visual_prompt:  220: Epoch 91 / 100: avg data time: 3.95e-02, avg batch time: 0.5538, average train loss: 1.0393
+[09/16 23:18:12][INFO] visual_prompt:  325: Inference (val):avg data time: 3.78e-05, avg batch time: 0.2306, average loss: 1.1502
+[09/16 23:18:12][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 86.50	top5: 97.83	
+[09/16 23:18:27][INFO] visual_prompt:  325: Inference (test):avg data time: 1.21e-04, avg batch time: 0.2421, average loss: 1.1498
+[09/16 23:18:27][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.62	top5: 97.88	
+[09/16 23:18:27][INFO] visual_prompt:  166: Training 92 / 100 epoch, with learning rate 0.0012235870926211618
+[09/16 23:18:51][INFO] visual_prompt:  220: Epoch 92 / 100: avg data time: 4.01e-02, avg batch time: 0.5541, average train loss: 1.0364
+[09/16 23:18:54][INFO] visual_prompt:  325: Inference (val):avg data time: 4.12e-05, avg batch time: 0.2322, average loss: 1.1495
+[09/16 23:18:54][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 85.50	top5: 97.67	
+[09/16 23:19:09][INFO] visual_prompt:  325: Inference (test):avg data time: 1.42e-04, avg batch time: 0.2423, average loss: 1.1497
+[09/16 23:19:09][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.79	top5: 97.95	
+[09/16 23:19:09][INFO] visual_prompt:  166: Training 93 / 100 epoch, with learning rate 0.0009684576015420277
+[09/16 23:19:33][INFO] visual_prompt:  220: Epoch 93 / 100: avg data time: 4.29e-02, avg batch time: 0.5572, average train loss: 1.0281
+[09/16 23:19:36][INFO] visual_prompt:  325: Inference (val):avg data time: 7.40e-05, avg batch time: 0.2312, average loss: 1.1486
+[09/16 23:19:36][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 85.67	top5: 97.83	
+[09/16 23:19:51][INFO] visual_prompt:  325: Inference (test):avg data time: 1.27e-04, avg batch time: 0.2417, average loss: 1.1438
+[09/16 23:19:51][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 85.04	top5: 97.84	
+[09/16 23:19:51][INFO] visual_prompt:  166: Training 94 / 100 epoch, with learning rate 0.0007426068431000883
+[09/16 23:20:15][INFO] visual_prompt:  220: Epoch 94 / 100: avg data time: 4.15e-02, avg batch time: 0.5555, average train loss: 1.0310
+[09/16 23:20:18][INFO] visual_prompt:  325: Inference (val):avg data time: 5.30e-05, avg batch time: 0.2307, average loss: 1.1430
+[09/16 23:20:18][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 85.83	top5: 97.67	
+[09/16 23:20:33][INFO] visual_prompt:  325: Inference (test):avg data time: 1.25e-04, avg batch time: 0.2422, average loss: 1.1422
+[09/16 23:20:33][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.71	top5: 97.88	
+[09/16 23:20:33][INFO] visual_prompt:  166: Training 95 / 100 epoch, with learning rate 0.0005463099816548578
+[09/16 23:20:57][INFO] visual_prompt:  220: Epoch 95 / 100: avg data time: 4.13e-02, avg batch time: 0.5556, average train loss: 1.0328
+[09/16 23:21:00][INFO] visual_prompt:  325: Inference (val):avg data time: 4.21e-05, avg batch time: 0.2306, average loss: 1.1454
+[09/16 23:21:00][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 86.17	top5: 97.67	
+[09/16 23:21:16][INFO] visual_prompt:  325: Inference (test):avg data time: 1.09e-04, avg batch time: 0.2422, average loss: 1.1436
+[09/16 23:21:16][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 85.05	top5: 97.91	
+[09/16 23:21:16][INFO] visual_prompt:  166: Training 96 / 100 epoch, with learning rate 0.00037980617469479954
+[09/16 23:21:40][INFO] visual_prompt:  220: Epoch 96 / 100: avg data time: 3.99e-02, avg batch time: 0.5538, average train loss: 1.0222
+[09/16 23:21:43][INFO] visual_prompt:  325: Inference (val):avg data time: 3.83e-05, avg batch time: 0.2301, average loss: 1.1474
+[09/16 23:21:43][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 85.83	top5: 97.67	
+[09/16 23:21:58][INFO] visual_prompt:  325: Inference (test):avg data time: 1.12e-04, avg batch time: 0.2424, average loss: 1.1435
+[09/16 23:21:58][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.98	top5: 97.88	
+[09/16 23:21:58][INFO] visual_prompt:  166: Training 97 / 100 epoch, with learning rate 0.00024329828146074097
+[09/16 23:22:22][INFO] visual_prompt:  220: Epoch 97 / 100: avg data time: 4.12e-02, avg batch time: 0.5554, average train loss: 1.0234
+[09/16 23:22:25][INFO] visual_prompt:  325: Inference (val):avg data time: 4.02e-05, avg batch time: 0.2306, average loss: 1.1442
+[09/16 23:22:25][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 86.17	top5: 97.67	
+[09/16 23:22:40][INFO] visual_prompt:  325: Inference (test):avg data time: 1.26e-04, avg batch time: 0.2425, average loss: 1.1408
+[09/16 23:22:40][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 84.98	top5: 97.98	
+[09/16 23:22:40][INFO] visual_prompt:  166: Training 98 / 100 epoch, with learning rate 0.00013695261579316776
+[09/16 23:23:04][INFO] visual_prompt:  220: Epoch 98 / 100: avg data time: 4.00e-02, avg batch time: 0.5547, average train loss: 1.0162
+[09/16 23:23:07][INFO] visual_prompt:  325: Inference (val):avg data time: 4.17e-05, avg batch time: 0.2313, average loss: 1.1434
+[09/16 23:23:07][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 86.00	top5: 97.67	
+[09/16 23:23:22][INFO] visual_prompt:  325: Inference (test):avg data time: 1.06e-04, avg batch time: 0.2420, average loss: 1.1412
+[09/16 23:23:22][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 85.07	top5: 97.93	
+[09/16 23:23:22][INFO] visual_prompt:  166: Training 99 / 100 epoch, with learning rate 6.089874350439506e-05
+[09/16 23:23:46][INFO] visual_prompt:  220: Epoch 99 / 100: avg data time: 3.99e-02, avg batch time: 0.5551, average train loss: 1.0238
+[09/16 23:23:49][INFO] visual_prompt:  325: Inference (val):avg data time: 4.14e-05, avg batch time: 0.2318, average loss: 1.1440
+[09/16 23:23:49][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 86.33	top5: 97.83	
+[09/16 23:24:04][INFO] visual_prompt:  325: Inference (test):avg data time: 1.36e-04, avg batch time: 0.2423, average loss: 1.1419
+[09/16 23:24:04][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 85.04	top5: 97.93	
+[09/16 23:24:04][INFO] visual_prompt:  166: Training 100 / 100 epoch, with learning rate 1.5229324522605948e-05
+[09/16 23:24:29][INFO] visual_prompt:  220: Epoch 100 / 100: avg data time: 4.19e-02, avg batch time: 0.5562, average train loss: 1.0284
+[09/16 23:24:31][INFO] visual_prompt:  325: Inference (val):avg data time: 6.87e-05, avg batch time: 0.2318, average loss: 1.1437
+[09/16 23:24:31][INFO] visual_prompt:  113: Classification results with val_CUB: top1: 86.33	top5: 97.83	
+[09/16 23:24:46][INFO] visual_prompt:  325: Inference (test):avg data time: 1.16e-04, avg batch time: 0.2420, average loss: 1.1416
+[09/16 23:24:46][INFO] visual_prompt:  113: Classification results with test_CUB: top1: 85.07	top5: 97.93	

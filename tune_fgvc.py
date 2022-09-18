@@ -25,7 +25,7 @@ def setup(args, lr, wd, check_runtime=True):
     cfg.merge_from_list(args.opts)
 
     # setup dist
-    cfg.DIST_INIT_PATH = "tcp://{}:4000".format(os.environ["SLURMD_NODENAME"])
+    #cfg.DIST_INIT_PATH = "tcp://{}:4000".format(os.environ["SLURMD_NODENAME"])
 
     # overwrite below four parameters
     lr = lr / 256 * cfg.DATA.BATCH_SIZE  # update lr based on the batchsize

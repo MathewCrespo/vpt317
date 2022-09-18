@@ -7,6 +7,7 @@ import torch
 
 from torch import nn
 from typing import List, Type
+import torch.nn.functional as F
 
 from ..utils import logging
 logger = logging.get_logger("visual_prompt")
@@ -22,6 +23,7 @@ class MLP(nn.Module):
         normalization: Type[nn.Module] = nn.BatchNorm1d,  # nn.LayerNorm,
         special_bias: bool = False,
         add_bn_first: bool = False,
+        dis = False
     ):
         super(MLP, self).__init__()
         projection_prev_dim = input_dim
@@ -50,6 +52,7 @@ class MLP(nn.Module):
 
         self.projection = nn.Sequential(*projection_modulelist)
         self.last_layer = nn.Linear(projection_prev_dim, last_dim)
+        self.dis = dis
         nn.init.kaiming_normal_(self.last_layer.weight, a=0, mode='fan_out')
         if special_bias:
             prior_prob = 0.01
@@ -63,4 +66,7 @@ class MLP(nn.Module):
         """
         x = self.projection(x)
         x = self.last_layer(x)
+
+        if self.dis:
+            x = F.sigmoid(x)
         return x

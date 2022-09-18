@@ -8,6 +8,7 @@ import torch.utils.data
 import torchvision as tv
 import numpy as np
 from collections import Counter
+from .source_dataset import SourceDataset
 
 from ..transforms import get_transforms
 from ...utils import logging
@@ -33,6 +34,12 @@ class JSONDataset(torch.utils.data.Dataset):
         self.data_percentage = cfg.DATA.PERCENTAGE
         self._construct_imdb(cfg)
         self.transform = get_transforms(split, cfg.DATA.CROPSIZE)
+
+        if 'gan' in cfg.MODEL.TRANSFER_TYPE and split == 'train':  # get the source dataset
+            self.sourceset = SourceDataset(cfg,'train')
+            self.l_target = len(self._imdb)
+            self.l_source = len(self.sourceset)
+            logger.info("Number of Source Images: {}".format(self.l_source))
 
     def get_anno(self):
         anno_path = os.path.join(self.data_dir, "{}.json".format(self._split))
@@ -117,6 +124,13 @@ class JSONDataset(torch.utils.data.Dataset):
             "label": label,
             # "id": index
         }
+
+        
+        if 'gan' in self.cfg.MODEL.TRANSFER_TYPE and self._split == 'train':
+            shuffle = np.random.randint(0,10000)
+            sample['source'] = self.sourceset[(index+shuffle)%self.l_source]
+            #print(index)
+            #print(shuffle)
         return sample
 
     def __len__(self):

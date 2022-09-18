@@ -1,0 +1,21 @@
+_BASE_: "../base-prompt.yaml"
+RUN_N_TIMES: 5
+DATA:
+  NAME: "CUB"
+  DATAPATH: "/remote-home/share/VPT/data/CUB_200_2011"  #TODO: need to specify here
+  BATCH_SIZE: 64
+  NUMBER_CLASSES: 200
+  MULTILABEL: False
+  FEATURE: "sup_vitb16_imagenet21k"
+MODEL:
+  TYPE: "vit"
+  PROMPT:
+    NUM_TOKENS: 200
+    DEEP: True
+    DROPOUT: 0.1
+  MODEL_ROOT: "/remote-home/share/VPT/pretrain"
+SOLVER:
+  BASE_LR: 0.1
+  WEIGHT_DECAY: 0.01
+SEED: 42
+OUTPUT_DIR: "./tst/seed42-deep-50"

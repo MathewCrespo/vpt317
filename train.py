@@ -33,7 +33,7 @@ def setup(args):
     cfg.merge_from_list(args.opts)
 
     # setup dist
-    cfg.DIST_INIT_PATH = "tcp://{}:12399".format(os.environ["SLURMD_NODENAME"])
+    #cfg.DIST_INIT_PATH = "tcp://{}:12399".format(os.environ["SLURMD_NODENAME"])
 
     # setup output dir
     # output_dir / data_name / feature_name / lr_wd / run1
@@ -66,7 +66,7 @@ def setup(args):
 def get_loaders(cfg, logger):
     logger.info("Loading training data (final training data for vtab)...")
     if cfg.DATA.NAME.startswith("vtab-"):
-        train_loader = data_loader.construct_trainval_loader(cfg)
+        train_loader = data_loader.construct_trainval_loader(cfg)  # only difference here for vtab and non-vtab
     else:
         train_loader = data_loader.construct_train_loader(cfg)
 

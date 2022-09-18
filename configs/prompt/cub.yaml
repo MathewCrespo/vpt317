@@ -1,5 +1,5 @@
 _BASE_: "../base-prompt.yaml"
-RUN_N_TIMES: 1
+RUN_N_TIMES: 5
 DATA:
   NAME: "CUB"
   DATAPATH: ""  #TODO: need to specify here

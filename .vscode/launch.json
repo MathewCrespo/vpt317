@@ -1,0 +1,30 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args":[
+                "--train-type", "prompt",
+                "--config_file", "configs/prompt/cub.yaml",
+                "MODEL.TYPE","vit-gan",
+                "MODEL.TRANSFER_TYPE","prompt+gan",
+                "DATA.BATCH_SIZE", "64",
+                "MODEL.PROMPT.DEEP", "True",
+                "MODEL.PROMPT.DROPOUT", "0.1",
+                "MODEL.PROMPT.NUM_TOKENS ","1",
+                "DATA.FEATURE ","sup_vitb16_imagenet21k",
+                "DATA.DATAPATH ","/remote-home/share/VPT/data/CUB_200_2011",
+                "MODEL.MODEL_ROOT", "/remote-home/share/VPT/pretrain/",
+                "OUTPUT_DIR ","./tst/debug"
+            ]
+        }
+    ]
+}

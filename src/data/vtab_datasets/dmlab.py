@@ -41,8 +41,10 @@ class DmlabData(base.ImageTfdsData):
   """
 
   def __init__(self, data_dir=None):
+    print('in loading dmlab')
 
     dataset_builder = tfds.builder("dmlab:2.0.1", data_dir=data_dir)
+    print('builder done')
 
     tfds_splits = {
         "train": "train",
@@ -55,10 +57,14 @@ class DmlabData(base.ImageTfdsData):
     }
 
     # Example counts are retrieved from the tensorflow dataset info.
-    train_count = dataset_builder.info.splits["train"].num_examples
-    val_count = dataset_builder.info.splits["validation"].num_examples
-    test_count = dataset_builder.info.splits["test"].num_examples
-
+    '''
+    train_count = dataset_builder.info.splits["train"].num_examples  # 800
+    val_count = dataset_builder.info.splits["validation"].num_examples # 200
+    test_count = dataset_builder.info.splits["test"].num_examples # 0
+    '''
+    train_count =  800
+    val_count =  200
+    test_count = 0
     # Creates a dict with example counts for each split.
     num_samples_splits = {
         "train": train_count,

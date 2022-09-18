@@ -67,6 +67,7 @@ def construct_train_loader(cfg):
 
 def construct_trainval_loader(cfg):
     """Train loader wrapper."""
+    #print(cfg.NUM_GPUS)
     if cfg.NUM_GPUS > 1:
         drop_last = True
     else:

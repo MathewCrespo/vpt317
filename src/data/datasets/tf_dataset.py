@@ -78,6 +78,7 @@ class TFDataset(torch.utils.data.Dataset):
         self.get_data(cfg, split)
 
     def get_data(self, cfg, split):
+        print('now get into get data before build_tf_dataset')
         tf_data = build_tf_dataset(cfg, split)
         data_list = list(tf_data)  # a list of tuples
 
@@ -167,6 +168,7 @@ def build_tf_dataset(cfg, mode):
 
     vtab_dataname = cfg.DATA.NAME.split("vtab-")[-1]
     data_dir = cfg.DATA.DATAPATH
+    print(data_dir)
     if vtab_dataname in DATASETS:
         data_cls = Registry.lookup("data." + vtab_dataname)
         vtab_tf_dataloader = data_cls(data_dir=data_dir)
