@@ -10,10 +10,10 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "justMyCode": true,
+            "justMyCode": false,
             "args":[
                 "--train-type", "prompt",
-                "--config_file", "configs/prompt/cub.yaml",
+                "--config_file", ".configs/prompt/cub.yaml",
                 "MODEL.TYPE","vit-gan",
                 "MODEL.TRANSFER_TYPE","prompt+gan",
                 "DATA.BATCH_SIZE", "64",

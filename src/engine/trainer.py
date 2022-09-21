@@ -43,6 +43,7 @@ class Trainer():
             #print(self.model.feat_dim)
             self.discriminator = MLP(
                 input_dim=self.model.feat_dim,
+                nonlinearity= nn.LeakyReLU,
                 mlp_dims=[self.model.feat_dim] * self.cfg.MODEL.MLP_NUM + \
                     [1], # noqa
                 special_bias=True,
@@ -54,14 +55,14 @@ class Trainer():
         self.device = device
         # solver related
         logger.info("\tSetting up the optimizer...")
-        self.optimizer = make_optimizer([self.model], cfg.SOLVER)
+        self.optimizer = make_optimizer([self.model.enc, self.model.head], cfg.SOLVER)
         self.scheduler = make_scheduler(self.optimizer, cfg.SOLVER)
 
         if 'gan' in self.cfg.MODEL.TRANSFER_TYPE:
             self.optimizerD = make_optimizer([self.discriminator],cfg.SOLVER)
             self.schedulerD = make_scheduler(self.optimizerD, cfg.SOLVER)
-            #self.optimizerG = make_optimizer([self.discriminator],cfg.SOLVER)
-            #self.schedulerG = make_scheduler(self.model.enc, cfg.SOLVER) # may be a bug here
+            self.optimizerG = make_optimizer([self.model.enc],cfg.SOLVER)
+            self.schedulerG = make_scheduler(self.optimizerG, cfg.SOLVER) # may be a bug here
 
         self.cls_criterion = build_loss(self.cfg)
 
@@ -96,7 +97,7 @@ class Trainer():
         if 'gan' in self.cfg.MODEL.TRANSFER_TYPE and is_train:
             x = inputs['target'].to(self.device, non_blocking=True)
             source = inputs['source'].to(self.device, non_blocking=True)
-            inputs = source
+            inputs = x
         else:
             inputs = inputs.to(self.device, non_blocking=True)    # (batchsize, 2048)
         
@@ -115,20 +116,23 @@ class Trainer():
                 # optimizer zero_grad                
                 real_label = 1
                 fake_label = 0
-                x_embed, source_embed = self.model.forward_encoder(x,source)
+                x_embed, source_embed, x_freeze = self.model.forward_encoder(x,source)
                 batch_size = x_embed.shape[0]
-                # train with real
+                # train with real: source + frozen encoder/ x(target) + vpt encoder
                 self.optimizerD.zero_grad()
-                source_out = self.discriminator(source_embed)  
+                source_out = self.discriminator(source_embed.detach()) #  source_embed or detach ?
+                x_out = self.discriminator(x_embed.detach())
                 label = torch.full((batch_size,1), real_label, dtype = torch.float,  device='cuda') # check type here
                 #print(label.shape)
-                lossD_real = self.gan_criterion(source_out,label)
+                lossD_real1 = self.gan_criterion(source_out,label)
+                lossD_real2 = self.gan_criterion(x_out,label)
+                lossD_real = lossD_real1 + lossD_real2
                 lossD_real.backward()
 
                 # train with fake
-                x_out = self.discriminator(x_embed.detach())
+                x_freeze_out = self.discriminator(x_freeze.detach())
                 label.fill_(fake_label)
-                lossD_fake = self.gan_criterion(x_out,label)
+                lossD_fake = self.gan_criterion(x_freeze_out,label)
                 lossD_fake.backward()
                 self.optimizerD.step()
                 
@@ -141,6 +145,7 @@ class Trainer():
                 lossG = self.gan_criterion(x_out,label)
                 lossG.backward()
                 #self.optimizerG.step()
+                self.optimizer.step()
         
             # classification loss
             outputs = self.model(inputs)  # (batchsize, num_cls)
@@ -174,9 +179,13 @@ class Trainer():
 
         # =======backward and optim step only if in training phase... =========
         if is_train:
-            #self.optimizer.zero_grad()
+            self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
+            #print('cls loss backward')
+        
+        if 'gan' in self.cfg.MODEL.TRANSFER_TYPE and is_train:
+            return lossD_fake, lossD_real, lossG, loss, outputs
 
         return loss, outputs
 
@@ -216,6 +225,12 @@ class Trainer():
         batch_time = AverageMeter('Time', ':6.3f')
         data_time = AverageMeter('Data', ':6.3f')
 
+        if 'gan' in self.cfg.MODEL.TRANSFER_TYPE:
+            lossesD_real = AverageMeter('Loss', ':.4e')
+            lossesD_fake = AverageMeter('Loss', ':.4e')
+            lossesG = AverageMeter('Loss', ':.4e')
+
+
         self.cls_weights = train_loader.dataset.get_class_weights(
             self.cfg.DATA.CLASS_WEIGHTS_TYPE)
         # logger.info(f"class weights: {self.cls_weights}")
@@ -226,6 +241,11 @@ class Trainer():
             losses.reset()
             batch_time.reset()
             data_time.reset()
+
+            if 'gan' in self.cfg.MODEL.TRANSFER_TYPE:
+                lossesD_real.reset()
+                lossesD_fake.reset()
+                lossesG.reset()
 
             lr = self.scheduler.get_lr()[0]
             logger.info(
@@ -250,7 +270,10 @@ class Trainer():
                 # measure data loading time
                 data_time.update(time.time() - end)
 
-                train_loss, _ = self.forward_one_batch(X, targets, True)
+                if 'gan' in self.cfg.MODEL.TRANSFER_TYPE:
+                    train_lossD_fake, train_lossD_real, train_lossG, train_loss, _ = self.forward_one_batch(X, targets, True)
+                else:
+                    train_loss, _ = self.forward_one_batch(X, targets, True)
 
                 if train_loss == -1:
                     # continue
@@ -258,6 +281,9 @@ class Trainer():
                 
                 if 'gan' in self.cfg.MODEL.TRANSFER_TYPE:
                     losses.update(train_loss.item(), X['source'].shape[0])
+                    lossesD_fake.update(train_lossD_fake.item(), X['source'].shape[0])
+                    lossesD_real.update(train_lossD_real.item(), X['source'].shape[0])
+                    lossesG.update(train_lossG.item(), X['source'].shape[0])
                 else:
                     losses.update(train_loss.item(), X.shape[0])
 
@@ -283,13 +309,27 @@ class Trainer():
                         )
                         + "max mem: {:.1f} GB ".format(gpu_mem_usage())
                     )
-            logger.info(
-                "Epoch {} / {}: ".format(epoch + 1, total_epoch)
-                + "avg data time: {:.2e}, avg batch time: {:.4f}, ".format(
-                    data_time.avg, batch_time.avg)
-                + "average train loss: {:.4f}".format(losses.avg))
-             # update lr, scheduler.step() must be called after optimizer.step() according to the docs: https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate  # noqa
+
+            if 'gan' in self.cfg.MODEL.TRANSFER_TYPE:
+                logger.info(
+                    "Epoch {} / {}: ".format(epoch + 1, total_epoch)
+                    + "avg data time: {:.2e}, avg batch time: {:.4f}, ".format(
+                        data_time.avg, batch_time.avg)
+                    + "average train loss: {:.4f}".format(losses.avg)
+                    + "average G loss: {:.4f}, ".format(lossesG.avg)
+                    + "average realD loss: {:.4f}, ".format(lossesD_real.avg)
+                    + "average fakeD loss: {:.4f}, ".format(lossesD_fake.avg))
+
+            else:
+                logger.info(
+                    "Epoch {} / {}: ".format(epoch + 1, total_epoch)
+                    + "avg data time: {:.2e}, avg batch time: {:.4f}, ".format(
+                        data_time.avg, batch_time.avg)
+                    + "average train loss: {:.4f}".format(losses.avg))
+            # update lr, scheduler.step() must be called after optimizer.step() according to the docs: https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate  # noqa
             self.scheduler.step()
+            if 'gan' in self.cfg.MODEL.TRANSFER_TYPE:
+                self.schedulerD.step()
 
             # Enable eval mode
             self.model.eval()
