@@ -4,7 +4,7 @@ launch helper functions
 """
 import argparse
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = '6'
+#os.environ["CUDA_VISIBLE_DEVICES"] = '6'
 import sys
 import pprint
 import PIL

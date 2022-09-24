@@ -527,11 +527,13 @@ class ViTGAN(nn.Module):
         if self.froze_enc and self.enc.training:
             self.enc.eval()
         self.enc_freeze.eval()
-
+        # vpt encoder
         x_vpt = self.enc(x)  # batch_size x self.feat_dim
+        source_vpt = self.enc(source)
+        # frozen encoder withou vpt
         x_freeze = self.enc_freeze(x) # fake samples
-        source = self.enc_freeze(source) # batch_size x self.feat_dim
-        return x_vpt, source, x_freeze
+        source_freeze = self.enc_freeze(source) # batch_size x self.feat_dim
+        return x_vpt, source_vpt, x_freeze, source_freeze
     
     def forward_cls_layerwise(self, x):
         cls_embeds = self.enc.forward_cls_layerwise(x)

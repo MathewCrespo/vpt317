@@ -116,23 +116,29 @@ class Trainer():
                 # optimizer zero_grad                
                 real_label = 1
                 fake_label = 0
-                x_embed, source_embed, x_freeze = self.model.forward_encoder(x,source)
-                batch_size = x_embed.shape[0]
-                # train with real: source + frozen encoder/ x(target) + vpt encoder
+
+                # get four kinds of outputs
+                x_vpt, source_vpt, x_freeze, source_freeze = self.model.forward_encoder(x,source)
+                batch_size = x_vpt.shape[0]
+
+                # train with real: source --> frozen encoder/ vpt encoder
                 self.optimizerD.zero_grad()
-                source_out = self.discriminator(source_embed.detach()) #  source_embed or detach ?
-                x_out = self.discriminator(x_embed.detach())
+                #source_vpt_D = self.discriminator(source_vpt.detach()) #  source_embed or detach ?
+                source_freeze_D = self.discriminator(source_freeze.detach())
                 label = torch.full((batch_size,1), real_label, dtype = torch.float,  device='cuda') # check type here
-                #print(label.shape)
-                lossD_real1 = self.gan_criterion(source_out,label)
-                lossD_real2 = self.gan_criterion(x_out,label)
-                lossD_real = lossD_real1 + lossD_real2
+                #lossD_real_vpt = self.gan_criterion(source_vpt_D,label)
+                lossD_real_freeze = self.gan_criterion(source_freeze_D,label)
+                #lossD_real = lossD_real_vpt + lossD_real_freeze
+                lossD_real = lossD_real_freeze
                 lossD_real.backward()
 
-                # train with fake
-                x_freeze_out = self.discriminator(x_freeze.detach())
+                # train with fake: downstream --> frozen encoder/ vpt encoder
+                x_vpt_D = self.discriminator(x_vpt.detach())
+                #x_freeze_D = self.discriminator(x_freeze.detach())             
                 label.fill_(fake_label)
-                lossD_fake = self.gan_criterion(x_freeze_out,label)
+                lossD_fake_vpt = self.gan_criterion(x_vpt_D,label)
+                #lossD_fake_freeze = self.gan_criterion(x_freeze_D,label)
+                lossD_fake = lossD_fake_vpt# + lossD_fake_freeze
                 lossD_fake.backward()
                 self.optimizerD.step()
                 
@@ -141,7 +147,7 @@ class Trainer():
                 # optimizer.zero_grad()
                 self.optimizer.zero_grad()
                 label.fill_(real_label)
-                x_out = self.discriminator(x_embed)
+                x_out = self.discriminator(x_vpt)
                 lossG = self.gan_criterion(x_out,label)
                 lossG.backward()
                 #self.optimizerG.step()
