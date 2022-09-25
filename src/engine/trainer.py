@@ -44,11 +44,12 @@ class Trainer():
             self.discriminator = MLP(
                 input_dim=self.model.feat_dim,
                 nonlinearity= nn.LeakyReLU,
-                mlp_dims=[self.model.feat_dim] * self.cfg.MODEL.MLP_NUM + \
+                mlp_dims=[self.model.feat_dim] * 4 + \
                     [1], # noqa
                 special_bias=True,
                 dis = True
             )
+            print(self.discriminator)
             self.discriminator = self.discriminator.cuda()
             self.gan_criterion = nn.BCELoss()
 
@@ -120,16 +121,17 @@ class Trainer():
                 # get four kinds of outputs
                 x_vpt, source_vpt, x_freeze, source_freeze = self.model.forward_encoder(x,source)
                 batch_size = x_vpt.shape[0]
-
+                #print(torch.mean(x_vpt,dim=1))
+                #print(torch.var(x_vpt,dim=1))
                 # train with real: source --> frozen encoder/ vpt encoder
                 self.optimizerD.zero_grad()
-                #source_vpt_D = self.discriminator(source_vpt.detach()) #  source_embed or detach ?
-                source_freeze_D = self.discriminator(source_freeze.detach())
+                source_vpt_D = self.discriminator(source_vpt.detach()) #  source_embed or detach ?
+                #source_freeze_D = self.discriminator(source_freeze.detach())
                 label = torch.full((batch_size,1), real_label, dtype = torch.float,  device='cuda') # check type here
-                #lossD_real_vpt = self.gan_criterion(source_vpt_D,label)
-                lossD_real_freeze = self.gan_criterion(source_freeze_D,label)
+                lossD_real_vpt = self.gan_criterion(source_vpt_D,label)
+                #lossD_real_freeze = self.gan_criterion(source_freeze_D,label)
                 #lossD_real = lossD_real_vpt + lossD_real_freeze
-                lossD_real = lossD_real_freeze
+                lossD_real = 0.1*lossD_real_vpt
                 lossD_real.backward()
 
                 # train with fake: downstream --> frozen encoder/ vpt encoder
@@ -138,7 +140,7 @@ class Trainer():
                 label.fill_(fake_label)
                 lossD_fake_vpt = self.gan_criterion(x_vpt_D,label)
                 #lossD_fake_freeze = self.gan_criterion(x_freeze_D,label)
-                lossD_fake = lossD_fake_vpt# + lossD_fake_freeze
+                lossD_fake = 0.1*lossD_fake_vpt# + lossD_fake_freeze
                 lossD_fake.backward()
                 self.optimizerD.step()
                 
@@ -148,8 +150,13 @@ class Trainer():
                 self.optimizer.zero_grad()
                 label.fill_(real_label)
                 x_out = self.discriminator(x_vpt)
-                lossG = self.gan_criterion(x_out,label)
-                lossG.backward()
+                lossG_real = 0.1*self.gan_criterion(x_out,label)
+                lossG_real.backward()
+                source_out = self.discriminator(source_vpt)
+                label.fill_(fake_label)
+                lossG_fake = 0.1*self.gan_criterion(source_out,label)
+                lossG = lossG_fake + lossG_real
+                lossG_fake.backward()
                 #self.optimizerG.step()
                 self.optimizer.step()
         
